@@ -1,0 +1,339 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Package;
+use Illuminate\Database\Seeder;
+
+class PackageSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Deaktiviraj stari PIUS PLUS paket
+        Package::where('slug', 'pius-plus')->update(['is_active' => false]);
+
+        // PIUS PRO (bivši PIUS PLUS)
+        $piusPro = Package::updateOrCreate(
+            ['slug' => 'pius-pro'],
+            [
+                'name' => 'PIUS PRO',
+                'price' => 2800.00,
+                'description' => 'Profesionalni paket - 2 mjeseca edukacije + startni paket',
+                'duration_days' => 60,
+                'payment_type' => 'installments',
+                'has_contract' => true,
+                'is_active' => true,
+                'contract_template' => "UGOVOR O PRODAJI I POHAĐANJU KURSA
+
+Član 1. Predmet ugovora
+Predmet ovog ugovora je prodaja i pohađanje kursa pod nazivom PIUS PRO, čije trajanje je dva mjeseca, počevši od datuma uplate prve rate. Kurs se sprovodi prema planu i programu definisanom od strane Prodavca. Kupac se obavezuje da uplati ukupnu cijenu kursa, dok Prodavac garantuje pohađanje kursa i izdavanje sertifikata po ispunjenju svih obaveza.
+
+Član 2. Cijena i uslovi plaćanja
+Ukupna cijena kursa iznosi 2.800 EUR (slovima: dvije hiljade osamsto evra). Kupac se obavezuje da plati ukupnu cijenu u sledećim ratama:
+
+Akontacija: 740 EUR – uplata u roku od 48h od datuma potpisivanja ugovora.
+Druga rata: 740 EUR – dospijeva do 05.03.2025.
+Treća rata: 740 EUR – dospijeva do 05.04.2025.
+Četvrta rata: 580 EUR – dospijeva do 05.05.2025.
+
+Uplate se vrše na račun Prodavca:
+Raiffeisen Regionalbank Mödling eGen (mbH)
+IBAN: AT31 3225 0000 0196 4659
+BLZ: 32250
+BIC: RLNWATWWGTD
+
+U slučaju kašnjenja u uplati, zatezna kamata se obračunava u skladu sa austrijskim Zakonom o kamatama.
+
+Član 3. Trajanje kursa
+Kurs traje ukupno dva mjeseca. Nastava se održava prema rasporedu definisanom od strane Prodavca, koji će biti dostavljen Kupcu prije početka kursa.
+
+Član 4. Sertifikat o završenom kursu
+Kupac stiče pravo na sertifikat o završenom kursu PIUS PRO samo nakon što su sve ugovorene rate u potpunosti plaćene. Prodavac zadržava pravo da ne izda sertifikat u slučaju neizmirenih obaveza.
+
+Član 5. Prava i obaveze strana
+
+Obaveze Prodavca:
+• Omogućiti Kupcu pohađanje kursa prema programu i rasporedu.
+• Omogućiti Kupcu Startni paket za rad: Mašina za PMU, 20 igala, 3 boje, mjerač za obrve, 10 posuda za boju, mixer za boje, lateks za vježbanje
+• Izvršiti izdavanje sertifikata nakon ispunjenja svih finansijskih obaveza.
+
+Obaveze Kupca:
+• Plaćati rate u skladu sa Članom 2.
+• Poštovati raspored kursa i pravila ponašanja na nastavi.
+• Ne distribuirati materijale kursa trećim licima bez saglasnosti Prodavca.
+
+Član 5a. Garancija zadovoljstva i povrat novca
+Prodavac garantuje povrat uplaćenog iznosa u slučaju da Kupac, nakon završetka kursa, ne ostvari očekivane rezultate u učenju, pod sledećim uslovima:
+• Kupac je bio prisutan na svim Zoom časovima tokom trajanja kursa.
+• Kupac je uredno slao sve zadatke i domaće zadatke u zadatim rokovima.
+• Kupac je odgovorio na sve testove i provjere znanja koje je odredio Prodavac.
+• Kupac je aktivno učestvovao na nastavi i izvršavao sve usmene i pismene zadatke koje je dobio od predavača.
+
+U slučaju da su svi gore navedeni uslovi ispunjeni, a Kupac i dalje smatra da nije postigao očekivani nivo znanja, Prodavac će, po pisanoj izjavi Kupca i dostavljenim dokazima o ispunjenju obaveza, izvršiti povrat uplaćenog iznosa u roku od 15 dana od dana prijema zahtjeva.
+
+Garancija povrata novca ne važi ukoliko Kupac bez opravdanog razloga izostaje sa nastave, ne dostavlja zadatke u predviđenim rokovima ili ne poštuje obaveze definisane ovim ugovorom.
+
+Član 6. Raskid ugovora
+U slučaju kašnjenja u plaćanju rata dužeg od 5 dana, Prodavac ima pravo da obustavi učešće Kupca na kursu do izmirenja svih obaveza. Ukoliko Kupac ne izmiri dvije uzastopne rate, Prodavac zadržava pravo da raskine ugovor i zadrži uplaćeni iznos do tog trenutka.
+
+Član 7. Mjerodavno pravo i rešavanje sporova
+Ovaj ugovor je sačinjen u skladu sa austrijskim pravom, posebno u skladu sa odredbama Opšteg građanskog zakonika (Allgemeines Bürgerliches Gesetzbuch - ABGB). Sve sporove koji proisteknu iz ovog ugovora strane će rešavati sporazumno, a u slučaju neuspjeha, nadležan je sud u Beču.
+
+Član 8. Završne odredbe
+1. Sve izmjene i dopune ovog ugovora važeće su samo ako su sačinjene u pisanom obliku i potpisane od strane obe ugovorne strane.
+2. Ovaj ugovor stupa na snagu danom potpisivanja.
+3. Ugovor je sačinjen u dva istovjetna primjerka, od kojih svaka strana zadržava po jedan.
+
+Datum: {datum}
+
+Potpis Kupca: [Digitalni potpis]",
+                'features' => [
+                    '2 mjeseca kompletne edukacije',
+                    'Pristup video materijalima',
+                    'WhatsApp grupa za podršku',
+                    'Sedmični grupni pozivi',
+                    'Digitalni certifikat',
+                    'Startni paket: Mašina za PMU, 20 igala, 3 boje, mjerač za obrve, 10 posuda za boju, mixer za boje, lateks za vježbanje',
+                ],
+            ]
+        );
+
+        $piusPro->installments()->delete();
+        $piusPro->installments()->createMany([
+            [
+                'installment_number' => 1,
+                'amount' => 740.00,
+                'due_description' => 'Akontacija - uplata u roku od 48h od potpisivanja ugovora',
+                'due_days' => 2,
+            ],
+            [
+                'installment_number' => 2,
+                'amount' => 740.00,
+                'due_description' => 'dospijeva do 05.03.2025',
+                'due_date' => '2025-03-05',
+            ],
+            [
+                'installment_number' => 3,
+                'amount' => 740.00,
+                'due_description' => 'dospijeva do 05.04.2025',
+                'due_date' => '2025-04-05',
+            ],
+            [
+                'installment_number' => 4,
+                'amount' => 580.00,
+                'due_description' => 'dospijeva do 05.05.2025',
+                'due_date' => '2025-05-05',
+            ],
+        ]);
+
+        // PIUS PRO + MASTER
+        $piusProMaster = Package::updateOrCreate(
+            ['slug' => 'pius-pro-master'],
+            [
+                'name' => 'PIUS PRO + MASTER',
+                'price' => 3700.00,
+                'description' => 'Premium paket - 2 mjeseca edukacije + startni paket + Master u Beču',
+                'duration_days' => 60,
+                'payment_type' => 'installments',
+                'has_contract' => true,
+                'is_active' => true,
+                'contract_template' => "UGOVOR O PRODAJI I POHAĐANJU KURSA
+
+Član 1. Predmet ugovora
+Predmet ovog ugovora je prodaja i pohađanje kursa pod nazivom PIUS PRO + MASTER, čije trajanje je dva mjeseca, počevši od datuma uplate prve rate. Kurs se sprovodi prema planu i programu definisanom od strane Prodavca. Kupac se obavezuje da uplati ukupnu cijenu kursa, dok Prodavac garantuje pohađanje kursa i izdavanje sertifikata po ispunjenju svih obaveza.
+
+Član 2. Cijena i uslovi plaćanja
+Ukupna cijena kursa iznosi 3.700 EUR (slovima: tri hiljade sedamsto evra). Kupac se obavezuje da plati ukupnu cijenu u sledećim ratama:
+
+Akontacija: 740 EUR – uplata u roku od 48h od datuma potpisivanja ugovora.
+Druga rata: 740 EUR – dospijeva do 05.03.2025.
+Treća rata: 740 EUR – dospijeva do 05.04.2025.
+Četvrta rata: 740 EUR – dospijeva do 05.05.2025.
+Peta rata: 740 EUR – dospijeva do 05.06.2025.
+
+Uplate se vrše na račun Prodavca:
+Raiffeisen Regionalbank Mödling eGen (mbH)
+IBAN: AT31 3225 0000 0196 4659
+BLZ: 32250
+BIC: RLNWATWWGTD
+
+U slučaju kašnjenja u uplati, zatezna kamata se obračunava u skladu sa austrijskim Zakonom o kamatama.
+
+Član 3. Trajanje kursa
+Kurs traje ukupno dva mjeseca. Nastava se održava prema rasporedu definisanom od strane Prodavca, koji će biti dostavljen Kupcu prije početka kursa.
+
+Član 4. Sertifikat o završenom kursu
+Kupac stiče pravo na sertifikat o završenom kursu PIUS PRO + MASTER samo nakon što su sve ugovorene rate u potpunosti plaćene. Prodavac zadržava pravo da ne izda sertifikat u slučaju neizmirenih obaveza.
+
+Član 5. Prava i obaveze strana
+
+Obaveze Prodavca:
+• Omogućiti Kupcu pohađanje kursa prema programu i rasporedu.
+• Omogućiti Kupcu Startni paket za rad: Mašina za PMU, 20 igala, 3 boje, mjerač za obrve, 10 posuda za boju, mixer za boje, lateks za vježbanje
+• Izvršiti izdavanje sertifikata nakon ispunjenja svih finansijskih obaveza.
+
+Obaveze Kupca:
+• Plaćati rate u skladu sa Članom 2.
+• Poštovati raspored kursa i pravila ponašanja na nastavi.
+• Ne distribuirati materijale kursa trećim licima bez saglasnosti Prodavca.
+
+Član 5a. Garancija zadovoljstva i povrat novca
+Prodavac garantuje povrat uplaćenog iznosa u slučaju da Kupac, nakon završetka kursa, ne ostvari očekivane rezultate u učenju, pod sledećim uslovima:
+• Kupac je bio prisutan na svim Zoom časovima tokom trajanja kursa.
+• Kupac je uredno slao sve zadatke i domaće zadatke u zadatim rokovima.
+• Kupac je odgovorio na sve testove i provjere znanja koje je odredio Prodavac.
+• Kupac je aktivno učestvovao na nastavi i izvršavao sve usmene i pismene zadatke koje je dobio od predavača.
+
+U slučaju da su svi gore navedeni uslovi ispunjeni, a Kupac i dalje smatra da nije postigao očekivani nivo znanja, Prodavac će, po pisanoj izjavi Kupca i dostavljenim dokazima o ispunjenju obaveza, izvršiti povrat uplaćenog iznosa u roku od 15 dana od dana prijema zahtjeva.
+
+Garancija povrata novca ne važi ukoliko Kupac bez opravdanog razloga izostaje sa nastave, ne dostavlja zadatke u predviđenim rokovima ili ne poštuje obaveze definisane ovim ugovorom.
+
+Napomena: Paket obuhvata sve navedeno u ovom ugovoru plus Master kod Prodavca u Beču. Master obuka traje jedan dan (od 10:00 do 18:00 sati) i uključuje teorijski dio i rad na modelu.
+
+Član 6. Raskid ugovora
+U slučaju kašnjenja u plaćanju rata dužeg od 5 dana, Prodavac ima pravo da obustavi učešće Kupca na kursu do izmirenja svih obaveza. Ukoliko Kupac ne izmiri dvije uzastopne rate, Prodavac zadržava pravo da raskine ugovor i zadrži uplaćeni iznos do tog trenutka.
+
+Član 7. Mjerodavno pravo i rešavanje sporova
+Ovaj ugovor je sačinjen u skladu sa austrijskim pravom, posebno u skladu sa odredbama Opšteg građanskog zakonika (Allgemeines Bürgerliches Gesetzbuch - ABGB). Sve sporove koji proisteknu iz ovog ugovora strane će rešavati sporazumno, a u slučaju neuspjeha, nadležan je sud u Beču.
+
+Član 8. Završne odredbe
+1. Sve izmjene i dopune ovog ugovora važeće su samo ako su sačinjene u pisanom obliku i potpisane od strane obe ugovorne strane.
+2. Ovaj ugovor stupa na snagu danom potpisivanja.
+3. Ugovor je sačinjen u dva istovjetna primjerka, od kojih svaka strana zadržava po jedan.
+
+Datum: {datum}
+
+Potpis Kupca: [Digitalni potpis]",
+                'features' => [
+                    '2 mjeseca kompletne edukacije',
+                    'Pristup video materijalima',
+                    'WhatsApp grupa za podršku',
+                    'Sedmični grupni pozivi',
+                    'Digitalni certifikat',
+                    'Startni paket: Mašina za PMU, 20 igala, 3 boje, mjerač za obrve, 10 posuda za boju, mixer za boje, lateks za vježbanje',
+                    'Master obuka u Beču (1 dan, 10:00-18:00, teorija + rad na modelu)',
+                ],
+            ]
+        );
+
+        $piusProMaster->installments()->delete();
+        $piusProMaster->installments()->createMany([
+            [
+                'installment_number' => 1,
+                'amount' => 740.00,
+                'due_description' => 'Akontacija - uplata u roku od 48h od potpisivanja ugovora',
+                'due_days' => 2,
+            ],
+            [
+                'installment_number' => 2,
+                'amount' => 740.00,
+                'due_description' => 'dospijeva do 05.03.2025',
+                'due_date' => '2025-03-05',
+            ],
+            [
+                'installment_number' => 3,
+                'amount' => 740.00,
+                'due_description' => 'dospijeva do 05.04.2025',
+                'due_date' => '2025-04-05',
+            ],
+            [
+                'installment_number' => 4,
+                'amount' => 740.00,
+                'due_description' => 'dospijeva do 05.05.2025',
+                'due_date' => '2025-05-05',
+            ],
+            [
+                'installment_number' => 5,
+                'amount' => 740.00,
+                'due_description' => 'dospijeva do 05.06.2025',
+                'due_date' => '2025-06-05',
+            ],
+        ]);
+
+        // Kurs: Usne
+        $usne = Package::updateOrCreate(
+            ['slug' => 'usne'],
+            [
+                'name' => 'PMU Usne',
+                'price' => 800.00,
+                'description' => 'Specijalizovani kurs za permanentni makeup usana',
+                'duration_days' => 30,
+                'payment_type' => 'fixed',
+                'has_contract' => true,
+                'is_active' => true,
+                'contract_template' => "UGOVOR O EDUKACIJI - PMU USNE\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti permanentnog makeup-a usana u trajanju od 30 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Teoriju i praksu PMU usana\n- Tehnike konturiranja\n- Rad sa različitim tipovima usana\n- Pristup video materijalima\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorenu cijenu.\n\nDatum: {datum}\n\nPotpis polaznika: [Digitalni potpis]",
+                'features' => [
+                    '30 dana edukacije',
+                    'Teorija i praksa PMU usana',
+                    'Tehnike konturiranja',
+                    'Rad sa različitim tipovima usana',
+                    'Pristup video materijalima',
+                    'Certifikat po završetku',
+                ],
+            ]
+        );
+
+        // Kurs: Nokti
+        $nokti = Package::updateOrCreate(
+            ['slug' => 'nokti'],
+            [
+                'name' => 'Profesionalna Manikira',
+                'price' => 600.00,
+                'description' => 'Kompletan kurs profesionalne manikire i nail art-a',
+                'duration_days' => 21,
+                'payment_type' => 'installments',
+                'has_contract' => true,
+                'is_active' => true,
+                'contract_template' => "UGOVOR O EDUKACIJI - PROFESIONALNA MANIKIRA\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti profesionalne manikire i nail art-a u trajanju od 21 dan.\n\nČlan 2 - Cijena i plaćanje\nUkupna cijena edukacije iznosi {cijena}.\nPlaćanje se vrši u 2 rate:\n- Prva rata: 300€ (u roku od 48h)\n- Druga rata: 300€ (do 01.03.2026)\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Osnove manikire\n- Gel i akril tehnike\n- Nail art dizajn\n- Higijena i sterilizacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorene rate na vrijeme.\n\nDatum: {datum}\n\nPotpis polaznika: [Digitalni potpis]",
+                'features' => [
+                    '21 dan edukacije',
+                    'Osnove manikire',
+                    'Gel i akril tehnike',
+                    'Nail art dizajn',
+                    'Higijena i sterilizacija',
+                    'Certifikat po završetku',
+                ],
+            ]
+        );
+
+        $nokti->installments()->delete();
+        $nokti->installments()->createMany([
+            [
+                'installment_number' => 1,
+                'amount' => 300.00,
+                'due_description' => 'u roku od 48h od potpisivanja ugovora',
+                'due_days' => 2,
+            ],
+            [
+                'installment_number' => 2,
+                'amount' => 300.00,
+                'due_description' => 'do 01.03.2026',
+                'due_date' => '2026-03-01',
+            ],
+        ]);
+
+        // Kurs: Trepavice
+        $trepavice = Package::updateOrCreate(
+            ['slug' => 'trepavice'],
+            [
+                'name' => 'Nadogradnja Trepavica',
+                'price' => 700.00,
+                'description' => 'Profesionalna nadogradnja trepavica - sve tehnike',
+                'duration_days' => 25,
+                'payment_type' => 'fixed',
+                'has_contract' => true,
+                'is_active' => true,
+                'contract_template' => "UGOVOR O EDUKACIJI - NADOGRADNJA TREPAVICA\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti nadogradnje trepavica u trajanju od 25 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Klasična metoda\n- Volumen tehnike (2D-6D)\n- Mega volumen\n- Lash lifting\n- Boja i laminacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorenu cijenu.\n\nDatum: {datum}\n\nPotpis polaznika: [Digitalni potpis]",
+                'features' => [
+                    '25 dana edukacije',
+                    'Klasična metoda',
+                    'Volumen tehnike (2D-6D)',
+                    'Mega volumen',
+                    'Lash lifting',
+                    'Boja i laminacija',
+                    'Certifikat po završetku',
+                ],
+            ]
+        );
+    }
+}

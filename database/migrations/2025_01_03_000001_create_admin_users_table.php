@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('admin_users', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('role')->default('admin');
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+
+        // Insert default admin
+        DB::table('admin_users')->insert([
+            'id' => \Illuminate\Support\Str::uuid(),
+            'email' => 'info@pius-academy.com',
+            'password' => Hash::make('aleksandra2025!'),
+            'role' => 'admin',
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('admin_users');
+    }
+};
