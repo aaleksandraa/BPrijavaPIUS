@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
+use App\Models\Package;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -14,11 +16,32 @@ class DashboardController extends Controller
         $totalStudents = Student::count();
         $signedContracts = Contract::whereNotNull('signed_at')->count();
 
-        $piusPlusCount = Student::where('package_type', 'pius-plus')->count();
-        $piusProCount = Student::where('package_type', 'pius-pro')->count();
+        // Get all packages with their prices
+        $packages = Package::all()->keyBy('slug');
 
-        $piusPlusRevenue = $piusPlusCount * 1800;
-        $piusProRevenue = $piusProCount * 2500;
+        // Count students by package and calculate revenue
+        $packageStats = Student::select('package_type', DB::raw('count(*) as count'))
+            ->groupBy('package_type')
+            ->get()
+            ->keyBy('package_type');
+
+        $byPackage = [];
+        $revenue = [];
+        $totalRevenue = 0;
+
+        foreach ($packages as $slug => $package) {
+            $count = $packageStats->get($slug)?->count ?? 0;
+            $byPackage[$slug] = $count;
+            $packageRevenue = $count * floatval($package->price);
+            $revenue[$slug] = $packageRevenue;
+            $totalRevenue += $packageRevenue;
+        }
+
+        // Ensure backward compatibility with old package names
+        $byPackage['pius_plus'] = $byPackage['pius-plus'] ?? 0;
+        $byPackage['pius_pro'] = $byPackage['pius-pro'] ?? 0;
+        $revenue['pius_plus'] = $revenue['pius-plus'] ?? 0;
+        $revenue['pius_pro'] = $revenue['pius-pro'] ?? 0;
 
         $recentStudents = Student::with('contracts')
             ->orderBy('enrolled_at', 'desc')
@@ -33,15 +56,8 @@ class DashboardController extends Controller
                 'contract_signed' => Student::where('status', 'contract_signed')->count(),
                 'completed' => Student::where('status', 'completed')->count(),
             ],
-            'by_package' => [
-                'pius_plus' => $piusPlusCount,
-                'pius_pro' => $piusProCount,
-            ],
-            'revenue' => [
-                'pius_plus' => $piusPlusRevenue,
-                'pius_pro' => $piusProRevenue,
-                'total' => $piusPlusRevenue + $piusProRevenue,
-            ],
+            'by_package' => $byPackage,
+            'revenue' => array_merge($revenue, ['total' => $totalRevenue]),
             'recent_students' => $recentStudents,
         ]);
     }
