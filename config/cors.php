@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', '*'],
 
     'allowed_methods' => ['*'],
 
@@ -23,6 +23,8 @@ return [
         env('FRONTEND_URL', 'http://localhost:5173'),
         'http://localhost:3000',
         'http://localhost:5173',
+        'https://prijava.pius-academy.com',
+        'http://prijava.pius-academy.com',
     ],
 
     'allowed_origins_patterns' => [],
