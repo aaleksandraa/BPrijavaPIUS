@@ -15,31 +15,6 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Handle preflight OPTIONS request
-        if ($request->isMethod('OPTIONS')) {
-            return response('', 200)
-                ->header('Access-Control-Allow-Origin', $this->getAllowedOrigin($request))
-                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, Origin, X-Requested-With')
-                ->header('Access-Control-Allow-Credentials', 'true')
-                ->header('Access-Control-Max-Age', '86400');
-        }
-
-        $response = $next($request);
-
-        // Add CORS headers to actual request
-        return $response
-            ->header('Access-Control-Allow-Origin', $this->getAllowedOrigin($request))
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, Origin, X-Requested-With')
-            ->header('Access-Control-Allow-Credentials', 'true');
-    }
-
-    /**
-     * Get the allowed origin based on the request origin.
-     */
-    private function getAllowedOrigin(Request $request): string
-    {
         $origin = $request->header('Origin');
 
         $allowedOrigins = [
@@ -49,11 +24,30 @@ class CorsMiddleware
             'http://localhost:3000',
         ];
 
-        if (in_array($origin, $allowedOrigins)) {
-            return $origin;
+        // Determine which origin to allow
+        $allowOrigin = in_array($origin, $allowedOrigins)
+            ? $origin
+            : 'https://prijava.pius-academy.com';
+
+        // Handle preflight OPTIONS request
+        if ($request->isMethod('OPTIONS')) {
+            return response('', 200)
+                ->header('Access-Control-Allow-Origin', $allowOrigin)
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, Origin, X-Requested-With, X-CSRF-Token')
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Max-Age', '86400');
         }
 
-        // Default to frontend URL from env
-        return config('app.frontend_url', 'https://prijava.pius-academy.com');
+        // Process the request
+        $response = $next($request);
+
+        // Add CORS headers to the response
+        $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, Origin, X-Requested-With, X-CSRF-Token');
+        $response->headers->set('Access-Control-Allow-Credentials', 'true');
+
+        return $response;
     }
 }
