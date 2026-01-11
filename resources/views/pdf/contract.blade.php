@@ -6,12 +6,12 @@
     <title>Ugovor - {{ $student->first_name }} {{ $student->last_name }}</title>
     <style>
         @page {
-            margin: 20mm 15mm 25mm 15mm;
+            margin: 15mm 15mm 20mm 15mm;
         }
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 10pt;
-            line-height: 1.4;
+            font-size: 9pt;
+            line-height: 1.3;
             color: #333;
             margin: 0;
             padding: 0;
@@ -19,69 +19,70 @@
         .header {
             background-color: #d9a078;
             color: white;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
             text-align: center;
         }
         .header h1 {
             margin: 0;
-            font-size: 18pt;
+            font-size: 16pt;
         }
         .header p {
-            margin: 3px 0 0 0;
-            font-size: 9pt;
+            margin: 2px 0 0 0;
+            font-size: 8pt;
         }
         .section {
-            margin-bottom: 12px;
-            padding: 10px;
+            margin-bottom: 8px;
+            padding: 6px 8px;
             background-color: #f8f9fa;
             border: 1px solid #e0e0e0;
         }
         .section-title {
-            font-size: 11pt;
+            font-size: 10pt;
             font-weight: bold;
             color: #d9a078;
-            margin-bottom: 8px;
-            border-bottom: 2px solid #d9a078;
-            padding-bottom: 4px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #d9a078;
+            padding-bottom: 2px;
         }
         .contract-content {
             background-color: white;
-            padding: 12px;
+            padding: 8px;
             border: 1px solid #ddd;
-            margin-top: 12px;
+            margin-top: 8px;
             text-align: left;
-            line-height: 1.6;
+            line-height: 1.4;
             white-space: pre-line;
+            font-size: 9pt;
         }
         .contract-content b {
             font-weight: bold;
             color: #333;
         }
         .signature-section {
-            margin-top: 15px;
-            padding: 12px;
+            margin-top: 10px;
+            padding: 8px;
             background-color: #f8f9fa;
             border: 1px solid #e0e0e0;
             page-break-inside: avoid;
         }
         .signature-image {
-            max-width: 180px;
-            max-height: 70px;
+            max-width: 150px;
+            max-height: 60px;
             border: 1px solid #ddd;
             background-color: white;
-            padding: 8px;
+            padding: 5px;
         }
         .footer {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 20mm;
+            height: 18mm;
             background-color: #f8f9fa;
             border-top: 1px solid #ddd;
-            padding: 8px 15mm;
-            font-size: 8pt;
+            padding: 5px 15mm;
+            font-size: 7pt;
             color: #666;
         }
         .footer-content {
@@ -108,15 +109,20 @@
             border-collapse: collapse;
         }
         td {
-            padding: 3px 0;
+            padding: 2px 0;
             vertical-align: top;
+            line-height: 1.3;
         }
         .label {
             font-weight: bold;
-            width: 40%;
+            width: 35%;
+            font-size: 8pt;
+        }
+        .value {
+            font-size: 8pt;
         }
         .content-wrapper {
-            margin-bottom: 25mm;
+            margin-bottom: 22mm;
         }
         script {
             display: none;
@@ -132,12 +138,12 @@
                     if (isset($pdf)) {
                         $text = "Strana {PAGE_NUM} od {PAGE_COUNT}";
                         $font = $fontMetrics->get_font("DejaVu Sans", "normal");
-                        $size = 8;
+                        $size = 7;
                         $pageWidth = $pdf->get_width();
                         $pageHeight = $pdf->get_height();
                         $textWidth = $fontMetrics->get_text_width($text, $font, $size);
                         $x = ($pageWidth - $textWidth) / 2;
-                        $y = $pageHeight - 15;
+                        $y = $pageHeight - 12;
                         $pdf->text($x, $y, $text, $font, $size);
                     }
                 </script>
@@ -157,35 +163,35 @@
             <table>
                 <tr>
                     <td class="label">Ime i prezime:</td>
-                    <td>{{ $student->first_name }} {{ $student->last_name }}</td>
+                    <td class="value">{{ $student->first_name }} {{ $student->last_name }}</td>
                 </tr>
                 <tr>
                     <td class="label">Email:</td>
-                    <td>{{ $student->email }}</td>
+                    <td class="value">{{ $student->email }}</td>
                 </tr>
                 <tr>
                     <td class="label">Telefon:</td>
-                    <td>{{ $student->phone }}</td>
+                    <td class="value">{{ $student->phone }}</td>
                 </tr>
                 <tr>
                     <td class="label">Adresa:</td>
-                    <td>{{ $student->address }}, {{ $student->postal_code }} {{ $student->city }}, {{ $student->country }}</td>
+                    <td class="value">{{ $student->address }}, {{ $student->postal_code }} {{ $student->city }}, {{ $student->country }}</td>
                 </tr>
                 <tr>
                     <td class="label">Broj ličnog dokumenta:</td>
-                    <td>{{ $student->id_document_number ?? 'N/A' }}</td>
+                    <td class="value">{{ $student->id_document_number ?? 'N/A' }}</td>
                 </tr>
                 <tr>
                     <td class="label">Paket:</td>
-                    <td>{{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }} ({{ number_format($package->price ?? 0, 2, ',', '.') }}€)</td>
+                    <td class="value">{{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }} ({{ number_format($package->price ?? 0, 2, ',', '.') }}€)</td>
                 </tr>
                 <tr>
                     <td class="label">Tip lica:</td>
-                    <td>{{ $student->entity_type === 'individual' ? 'Fizičko lice' : 'Pravno lice' }}</td>
+                    <td class="value">{{ $student->entity_type === 'individual' ? 'Fizičko lice' : 'Pravno lice' }}</td>
                 </tr>
                 <tr>
                     <td class="label">Način plaćanja:</td>
-                    <td>{{ $student->payment_method === 'full' ? 'Plaćanje u cjelosti' : 'Plaćanje na rate' }}</td>
+                    <td class="value">{{ $student->payment_method === 'full' ? 'Plaćanje u cjelosti' : 'Plaćanje na rate' }}</td>
                 </tr>
             </table>
         </div>
@@ -196,19 +202,19 @@
             <table>
                 <tr>
                     <td class="label">Naziv firme:</td>
-                    <td>{{ $student->company_name ?? 'N/A' }}</td>
+                    <td class="value">{{ $student->company_name ?? 'N/A' }}</td>
                 </tr>
                 <tr>
                     <td class="label">PDV broj:</td>
-                    <td>{{ $student->vat_number ?? 'N/A' }}</td>
+                    <td class="value">{{ $student->vat_number ?? 'N/A' }}</td>
                 </tr>
                 <tr>
                     <td class="label">Adresa firme:</td>
-                    <td>{{ $student->company_address ?? 'N/A' }}, {{ $student->company_postal_code ?? '' }} {{ $student->company_city ?? '' }}, {{ $student->company_country ?? '' }}</td>
+                    <td class="value">{{ $student->company_address ?? 'N/A' }}, {{ $student->company_postal_code ?? '' }} {{ $student->company_city ?? '' }}, {{ $student->company_country ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="label">Registracijski broj:</td>
-                    <td>{{ $student->company_registration ?? 'N/A' }}</td>
+                    <td class="value">{{ $student->company_registration ?? 'N/A' }}</td>
                 </tr>
             </table>
         </div>
@@ -219,19 +225,19 @@
             <table>
                 <tr>
                     <td class="label">Primalac:</td>
-                    <td>Željka Radičanin</td>
+                    <td class="value">Željka Radičanin</td>
                 </tr>
                 <tr>
                     <td class="label">Banka:</td>
-                    <td>Raiffeisen Regionalbank Mödling eGen (mbH)</td>
+                    <td class="value">Raiffeisen Regionalbank Mödling eGen (mbH)</td>
                 </tr>
                 <tr>
                     <td class="label">IBAN:</td>
-                    <td>AT31 3225 0000 0196 4659</td>
+                    <td class="value">AT31 3225 0000 0196 4659</td>
                 </tr>
                 <tr>
                     <td class="label">BIC:</td>
-                    <td>RLNWATWWGTD</td>
+                    <td class="value">RLNWATWWGTD</td>
                 </tr>
             </table>
         </div>
@@ -274,7 +280,7 @@
         <div class="signature-section">
             <div class="section-title">DIGITALNI POTPIS</div>
             <img src="{{ $contract->signature_data }}" class="signature-image" alt="Potpis">
-            <p style="margin: 8px 0 0 0; font-size: 9pt;">Potpisano: {{ $contract->signed_at?->format('d.m.Y H:i') }}</p>
+            <p style="margin: 5px 0 0 0; font-size: 8pt;">Potpisano: {{ $contract->signed_at?->format('d.m.Y H:i') }}</p>
         </div>
         @endif
     </div>
