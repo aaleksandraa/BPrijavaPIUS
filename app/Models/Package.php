@@ -14,6 +14,7 @@ class Package extends Model
         'name',
         'slug',
         'price',
+        'discount_price',
         'payment_type',
         'description',
         'image_url',
@@ -30,6 +31,7 @@ class Package extends Model
     {
         return [
             'price' => 'decimal:2',
+            'discount_price' => 'decimal:2',
             'is_active' => 'boolean',
             'show_on_landing' => 'boolean',
             'has_contract' => 'boolean',

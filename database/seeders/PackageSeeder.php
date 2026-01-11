@@ -105,7 +105,7 @@ Ovaj ugovor je sačinjen u skladu sa austrijskim pravom, posebno u skladu sa odr
 
 Datum: {datum}
 
-Potpis Kupca: [Digitalni potpis]",
+",
                 'contract_template_company' => "UGOVOR O PRODAJI KURSA NA RATE
 
 Zaključen dana: {datum}, u Beču, Austrija
@@ -206,9 +206,7 @@ Ovaj ugovor je sačinjen u skladu sa austrijskim pravom, posebno u skladu sa odr
 2. Ovaj ugovor stupa na snagu danom potpisivanja.
 3. Ugovor je sačinjen u dva istovjetna primjerka, od kojih svaka strana zadržava po jedan.
 
-Datum: {datum}
-
-Potpis ovlašćenog lica: [Digitalni potpis]",
+Datum: {datum}",
                 'features' => [
                     '2 mjeseca kompletne edukacije',
                     'Pristup video materijalima',
@@ -325,7 +323,7 @@ Ovaj ugovor je sačinjen u skladu sa austrijskim pravom, posebno u skladu sa odr
 
 Datum: {datum}
 
-Potpis Kupca: [Digitalni potpis]",
+",
                 'contract_template_company' => "UGOVOR O PRODAJI I POHAĐANJU KURSA (PRAVNO LICE)
 
 Član 1. Predmet ugovora
@@ -407,9 +405,7 @@ Ovaj ugovor je sačinjen u skladu sa austrijskim pravom, posebno u skladu sa odr
 2. Ovaj ugovor stupa na snagu danom potpisivanja.
 3. Ugovor je sačinjen u dva istovjetna primjerka, od kojih svaka strana zadržava po jedan.
 
-Datum: {datum}
-
-Potpis ovlašćenog lica: [Digitalni potpis]",
+Datum: {datum}",
                 'features' => [
                     '2 mjeseca kompletne edukacije',
                     'Pristup video materijalima',
@@ -467,8 +463,8 @@ Potpis ovlašćenog lica: [Digitalni potpis]",
                 'payment_type' => 'fixed',
                 'has_contract' => true,
                 'is_active' => true,
-                'contract_template_individual' => "UGOVOR O EDUKACIJI - PMU USNE\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti permanentnog makeup-a usana u trajanju od 30 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Teoriju i praksu PMU usana\n- Tehnike konturiranja\n- Rad sa različitim tipovima usana\n- Pristup video materijalima\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorenu cijenu.\n\nDatum: {datum}\n\nPotpis polaznika: [Digitalni potpis]",
-                'contract_template_company' => "UGOVOR O EDUKACIJI - PMU USNE (PRAVNO LICE)\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\nKUPAC (PRAVNO LICE):\nNaziv firme: {nazivFirme}\nPDV broj: {pdvBroj}\nAdresa: {adresaFirme}, {postanskiBrojFirme} {mjestoFirme}, {drzavaFirme}\nRegistracijski broj: {registracijaFirme}\n\nPOLAZNIK:\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti permanentnog makeup-a usana u trajanju od 30 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Teoriju i praksu PMU usana\n- Tehnike konturiranja\n- Rad sa različitim tipovima usana\n- Pristup video materijalima\n- Certifikat po završetku\n\nČlan 4 - Obaveze kupca\nKupac (pravno lice) se obavezuje da plati dogovorenu cijenu i osigura da polaznik redovno prisustvuje nastavi.\n\nDatum: {datum}\n\nPotpis ovlašćenog lica: [Digitalni potpis]",
+                'contract_template_individual' => "UGOVOR O EDUKACIJI - PMU USNE\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti permanentnog makeup-a usana u trajanju od 30 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Teoriju i praksu PMU usana\n- Tehnike konturiranja\n- Rad sa različitim tipovima usana\n- Pristup video materijalima\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorenu cijenu.\n\nDatum: {datum}\n\n",
+                'contract_template_company' => "UGOVOR O EDUKACIJI - PMU USNE (PRAVNO LICE)\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\nKUPAC (PRAVNO LICE):\nNaziv firme: {nazivFirme}\nPDV broj: {pdvBroj}\nAdresa: {adresaFirme}, {postanskiBrojFirme} {mjestoFirme}, {drzavaFirme}\nRegistracijski broj: {registracijaFirme}\n\nPOLAZNIK:\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti permanentnog makeup-a usana u trajanju od 30 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Teoriju i praksu PMU usana\n- Tehnike konturiranja\n- Rad sa različitim tipovima usana\n- Pristup video materijalima\n- Certifikat po završetku\n\nČlan 4 - Obaveze kupca\nKupac (pravno lice) se obavezuje da plati dogovorenu cijenu i osigura da polaznik redovno prisustvuje nastavi.\n\nDatum: {datum}",
                 'features' => [
                     '30 dana edukacije',
                     'Teorija i praksa PMU usana',
@@ -491,8 +487,8 @@ Potpis ovlašćenog lica: [Digitalni potpis]",
                 'payment_type' => 'installments',
                 'has_contract' => true,
                 'is_active' => true,
-                'contract_template_individual' => "UGOVOR O EDUKACIJI - PROFESIONALNA MANIKIRA\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti profesionalne manikire i nail art-a u trajanju od 21 dan.\n\nČlan 2 - Cijena i plaćanje\nUkupna cijena edukacije iznosi {cijena}.\nPlaćanje se vrši u 2 rate:\n- Prva rata: 300€ (u roku od 48h)\n- Druga rata: 300€ (do 01.03.2026)\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Osnove manikire\n- Gel i akril tehnike\n- Nail art dizajn\n- Higijena i sterilizacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorene rate na vrijeme.\n\nDatum: {datum}\n\nPotpis polaznika: [Digitalni potpis]",
-                'contract_template_company' => "UGOVOR O EDUKACIJI - PROFESIONALNA MANIKIRA (PRAVNO LICE)\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\nKUPAC (PRAVNO LICE):\nNaziv firme: {nazivFirme}\nPDV broj: {pdvBroj}\nAdresa: {adresaFirme}, {postanskiBrojFirme} {mjestoFirme}, {drzavaFirme}\nRegistracijski broj: {registracijaFirme}\n\nPOLAZNIK:\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti profesionalne manikire i nail art-a u trajanju od 21 dan.\n\nČlan 2 - Cijena i plaćanje\nUkupna cijena edukacije iznosi {cijena}.\nPlaćanje se vrši u 2 rate:\n- Prva rata: 300€ (u roku od 48h)\n- Druga rata: 300€ (do 01.03.2026)\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Osnove manikire\n- Gel i akril tehnike\n- Nail art dizajn\n- Higijena i sterilizacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze kupca\nKupac (pravno lice) se obavezuje da plati dogovorene rate na vrijeme i osigura da polaznik redovno prisustvuje nastavi.\n\nDatum: {datum}\n\nPotpis ovlašćenog lica: [Digitalni potpis]",
+                'contract_template_individual' => "UGOVOR O EDUKACIJI - PROFESIONALNA MANIKIRA\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti profesionalne manikire i nail art-a u trajanju od 21 dan.\n\nČlan 2 - Cijena i plaćanje\nUkupna cijena edukacije iznosi {cijena}.\nPlaćanje se vrši u 2 rate:\n- Prva rata: 300€ (u roku od 48h)\n- Druga rata: 300€ (do 01.03.2026)\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Osnove manikire\n- Gel i akril tehnike\n- Nail art dizajn\n- Higijena i sterilizacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorene rate na vrijeme.\n\nDatum: {datum}\n\n",
+                'contract_template_company' => "UGOVOR O EDUKACIJI - PROFESIONALNA MANIKIRA (PRAVNO LICE)\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\nKUPAC (PRAVNO LICE):\nNaziv firme: {nazivFirme}\nPDV broj: {pdvBroj}\nAdresa: {adresaFirme}, {postanskiBrojFirme} {mjestoFirme}, {drzavaFirme}\nRegistracijski broj: {registracijaFirme}\n\nPOLAZNIK:\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti profesionalne manikire i nail art-a u trajanju od 21 dan.\n\nČlan 2 - Cijena i plaćanje\nUkupna cijena edukacije iznosi {cijena}.\nPlaćanje se vrši u 2 rate:\n- Prva rata: 300€ (u roku od 48h)\n- Druga rata: 300€ (do 01.03.2026)\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Osnove manikire\n- Gel i akril tehnike\n- Nail art dizajn\n- Higijena i sterilizacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze kupca\nKupac (pravno lice) se obavezuje da plati dogovorene rate na vrijeme i osigura da polaznik redovno prisustvuje nastavi.\n\nDatum: {datum}",
                 'features' => [
                     '21 dan edukacije',
                     'Osnove manikire',
@@ -531,8 +527,8 @@ Potpis ovlašćenog lica: [Digitalni potpis]",
                 'payment_type' => 'fixed',
                 'has_contract' => true,
                 'is_active' => true,
-                'contract_template_individual' => "UGOVOR O EDUKACIJI - NADOGRADNJA TREPAVICA\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti nadogradnje trepavica u trajanju od 25 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Klasična metoda\n- Volumen tehnike (2D-6D)\n- Mega volumen\n- Lash lifting\n- Boja i laminacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorenu cijenu.\n\nDatum: {datum}\n\nPotpis polaznika: [Digitalni potpis]",
-                'contract_template_company' => "UGOVOR O EDUKACIJI - NADOGRADNJA TREPAVICA (PRAVNO LICE)\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\nKUPAC (PRAVNO LICE):\nNaziv firme: {nazivFirme}\nPDV broj: {pdvBroj}\nAdresa: {adresaFirme}, {postanskiBrojFirme} {mjestoFirme}, {drzavaFirme}\nRegistracijski broj: {registracijaFirme}\n\nPOLAZNIK:\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti nadogradnje trepavica u trajanju od 25 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Klasična metoda\n- Volumen tehnike (2D-6D)\n- Mega volumen\n- Lash lifting\n- Boja i laminacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze kupca\nKupac (pravno lice) se obavezuje da plati dogovorenu cijenu i osigura da polaznik redovno prisustvuje nastavi.\n\nDatum: {datum}\n\nPotpis ovlašćenog lica: [Digitalni potpis]",
+                'contract_template_individual' => "UGOVOR O EDUKACIJI - NADOGRADNJA TREPAVICA\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti nadogradnje trepavica u trajanju od 25 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Klasična metoda\n- Volumen tehnike (2D-6D)\n- Mega volumen\n- Lash lifting\n- Boja i laminacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze polaznika\nPolaznik se obavezuje da redovno prisustvuje nastavi i da plati dogovorenu cijenu.\n\nDatum: {datum}\n\n",
+                'contract_template_company' => "UGOVOR O EDUKACIJI - NADOGRADNJA TREPAVICA (PRAVNO LICE)\n\nIzmeđu:\n\nPIUS Academy\nAdresa: [Adresa akademije]\n\ni\n\nKUPAC (PRAVNO LICE):\nNaziv firme: {nazivFirme}\nPDV broj: {pdvBroj}\nAdresa: {adresaFirme}, {postanskiBrojFirme} {mjestoFirme}, {drzavaFirme}\nRegistracijski broj: {registracijaFirme}\n\nPOLAZNIK:\n{ime} {prezime}\nAdresa: {adresa}, {postanskiBroj} {grad}, {drzava}\nBroj dokumenta: {brojLicnogDokumenta}\nEmail: {email}\n\nČlan 1 - Predmet ugovora\nPredmet ovog ugovora je edukacija iz oblasti nadogradnje trepavica u trajanju od 25 dana.\n\nČlan 2 - Cijena\nUkupna cijena edukacije iznosi {cijena}.\n\nČlan 3 - Obaveze akademije\nAkademija se obavezuje da pruži kvalitetnu edukaciju koja uključuje:\n- Klasična metoda\n- Volumen tehnike (2D-6D)\n- Mega volumen\n- Lash lifting\n- Boja i laminacija\n- Certifikat po završetku\n\nČlan 4 - Obaveze kupca\nKupac (pravno lice) se obavezuje da plati dogovorenu cijenu i osigura da polaznik redovno prisustvuje nastavi.\n\nDatum: {datum}",
                 'features' => [
                     '25 dana edukacije',
                     'Klasična metoda',

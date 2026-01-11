@@ -54,6 +54,10 @@
             line-height: 1.6;
             white-space: pre-line;
         }
+        .contract-content strong {
+            font-weight: bold;
+            color: #333;
+        }
         .signature-section {
             margin-top: 15px;
             padding: 12px;
@@ -234,7 +238,30 @@
 
         <div class="contract-content">
             <div class="section-title">SADRŽAJ UGOVORA</div>
-            {{ $contract->contract_content }}
+            @php
+                $content = $contract->contract_content;
+
+                // Bold za naslove članaka i sekcija
+                $content = preg_replace('/^(Član \d+[a-z]?\..*)/m', '<strong>$1</strong>', $content);
+
+                // Bold za "Obaveze Prodavca:" i "Obaveze Kupca:"
+                $content = preg_replace('/(Obaveze Prodavca:|Obaveze Kupca.*:)/m', '<strong>$1</strong>', $content);
+
+                // Bold za važne rečenice (bullet points sa važnim obavezama)
+                $content = preg_replace('/(• Ne distribuirati materijale kursa trećim licima bez saglasnosti Prodavca\.)/m', '<strong>$1</strong>', $content);
+
+                // Bold za naslove ugovora
+                $content = preg_replace('/^(UGOVOR O.*)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(Zaključen dana:.*)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(Između:)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(Prodavca:.*)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(Kupca \(.*\):.*)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(Ugovorne odredbe:)/m', '<strong>$1</strong>', $content);
+
+                // Konvertuj nove linije u <br>
+                $content = nl2br(e($content));
+            @endphp
+            {!! $content !!}
         </div>
 
         @if($contract->signature_data)
