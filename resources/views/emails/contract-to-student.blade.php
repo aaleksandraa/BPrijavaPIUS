@@ -125,7 +125,7 @@
                     <span class="label">BIC:</span> RLNWATWWGTD
                 </div>
                 <div class="info-row">
-                    <span class="label">Svrha uplate:</span> {{ $student->first_name }} {{ $student->last_name }} - {{ strtoupper(str_replace('-', ' ', $student->package_type)) }}
+                    <span class="label">Svrha uplate:</span> {{ $student->first_name }} {{ $student->last_name }} - {{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }}
                 </div>
             </div>
             @endif

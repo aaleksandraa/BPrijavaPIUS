@@ -51,13 +51,16 @@
             border: 1px solid #ddd;
             margin-top: 8px;
             text-align: left;
-            line-height: 1.4;
+            line-height: 1.35;
             white-space: pre-line;
             font-size: 9pt;
         }
         .contract-content b {
             font-weight: bold;
             color: #333;
+        }
+        .contract-content p {
+            margin: 0 0 4px 0;
         }
         .signature-section {
             margin-top: 10px;
@@ -270,8 +273,7 @@
                 // Konvertuj ** u <b> tagove
                 $content = preg_replace('/\*\*(.*?)\*\*/s', '<b>$1</b>', $content);
 
-                // Konvertuj nove linije u <br>
-                $content = nl2br($content);
+                // NE koristimo nl2br() jer white-space: pre-line već čuva nove redove
             @endphp
             {!! $content !!}
         </div>
