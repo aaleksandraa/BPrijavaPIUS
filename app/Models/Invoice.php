@@ -13,6 +13,7 @@ class Invoice extends Model
     protected $fillable = [
         'student_id',
         'invoice_number',
+        'is_custom_number',
         'invoice_date',
         'payment_date',
         'description',
@@ -34,6 +35,7 @@ class Invoice extends Model
             'vat_rate' => 'decimal:2',
             'vat_amount' => 'decimal:2',
             'total_amount' => 'decimal:2',
+            'is_custom_number' => 'boolean',
         ];
     }
 
@@ -46,8 +48,9 @@ class Invoice extends Model
     {
         $year = date('Y');
 
-        // Get all used invoice numbers for this year
+        // Get all used invoice numbers for this year (excluding custom numbers)
         $usedNumbers = self::whereYear('created_at', $year)
+            ->where('is_custom_number', false)
             ->pluck('invoice_number')
             ->map(function ($num) {
                 $parts = explode('/', $num);

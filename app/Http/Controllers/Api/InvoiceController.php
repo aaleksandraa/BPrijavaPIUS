@@ -34,14 +34,23 @@ class InvoiceController extends Controller
             'installment_number' => 'nullable|integer|min:1|max:10',
             'notes' => 'nullable|string',
             'mark_as_paid' => 'boolean',
+            'custom_invoice_number' => 'nullable|string|max:50',
+            'use_custom_number' => 'boolean',
         ]);
 
         $vatRate = $validated['vat_rate'] ?? 20;
         $amounts = Invoice::calculateFromGross($validated['total_amount'], $vatRate);
 
+        // Determine invoice number
+        $useCustomNumber = $validated['use_custom_number'] ?? false;
+        $invoiceNumber = $useCustomNumber && !empty($validated['custom_invoice_number'])
+            ? $validated['custom_invoice_number']
+            : Invoice::generateInvoiceNumber();
+
         $invoice = Invoice::create([
             'student_id' => $validated['student_id'],
-            'invoice_number' => Invoice::generateInvoiceNumber(),
+            'invoice_number' => $invoiceNumber,
+            'is_custom_number' => $useCustomNumber,
             'invoice_date' => $validated['invoice_date'],
             'payment_date' => $validated['payment_date'] ?? null,
             'description' => $validated['description'],
