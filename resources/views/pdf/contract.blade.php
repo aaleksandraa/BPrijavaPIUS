@@ -50,9 +50,9 @@
             padding: 12px;
             border: 1px solid #ddd;
             margin-top: 12px;
-            text-align: justify;
-            line-height: 1.5;
-            white-space: pre-wrap;
+            text-align: left;
+            line-height: 1.6;
+            white-space: pre-line;
         }
         .signature-section {
             margin-top: 15px;
