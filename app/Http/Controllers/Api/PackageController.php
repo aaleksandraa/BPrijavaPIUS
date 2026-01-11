@@ -42,7 +42,8 @@ class PackageController extends Controller
             'is_active' => 'boolean',
             'show_on_landing' => 'boolean',
             'has_contract' => 'boolean',
-            'contract_template' => 'nullable|string',
+            'contract_template_individual' => 'nullable|string',
+            'contract_template_company' => 'nullable|string',
             'installments' => 'nullable|array',
             'installments.*.installment_number' => 'required|integer|min:1',
             'installments.*.amount' => 'required|numeric|min:0',
@@ -73,7 +74,8 @@ class PackageController extends Controller
             'is_active' => $validated['is_active'] ?? true,
             'show_on_landing' => $validated['show_on_landing'] ?? false,
             'has_contract' => $validated['has_contract'] ?? true,
-            'contract_template' => $validated['contract_template'] ?? null,
+            'contract_template_individual' => $validated['contract_template_individual'] ?? null,
+            'contract_template_company' => $validated['contract_template_company'] ?? null,
         ]);
 
         if ($validated['payment_type'] === 'installments' && !empty($validated['installments'])) {
@@ -100,6 +102,7 @@ class PackageController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
+            'slug' => 'sometimes|string|max:255|unique:packages,slug,' . $package->id,
             'price' => 'sometimes|numeric|min:0',
             'payment_type' => 'sometimes|in:installments,fixed',
             'description' => 'nullable|string',
@@ -109,7 +112,8 @@ class PackageController extends Controller
             'is_active' => 'sometimes|boolean',
             'show_on_landing' => 'sometimes|boolean',
             'has_contract' => 'sometimes|boolean',
-            'contract_template' => 'nullable|string',
+            'contract_template_individual' => 'nullable|string',
+            'contract_template_company' => 'nullable|string',
             'installments' => 'nullable|array',
             'installments.*.id' => 'nullable|uuid',
             'installments.*.installment_number' => 'required|integer|min:1',
@@ -121,6 +125,7 @@ class PackageController extends Controller
 
         $package->update([
             'name' => $validated['name'] ?? $package->name,
+            'slug' => $validated['slug'] ?? $package->slug,
             'price' => $validated['price'] ?? $package->price,
             'payment_type' => $validated['payment_type'] ?? $package->payment_type,
             'description' => $validated['description'] ?? $package->description,
@@ -130,7 +135,8 @@ class PackageController extends Controller
             'is_active' => $validated['is_active'] ?? $package->is_active,
             'show_on_landing' => $validated['show_on_landing'] ?? $package->show_on_landing,
             'has_contract' => $validated['has_contract'] ?? $package->has_contract,
-            'contract_template' => $validated['contract_template'] ?? $package->contract_template,
+            'contract_template_individual' => $validated['contract_template_individual'] ?? $package->contract_template_individual,
+            'contract_template_company' => $validated['contract_template_company'] ?? $package->contract_template_company,
         ]);
 
         if (isset($validated['installments'])) {
@@ -147,7 +153,32 @@ class PackageController extends Controller
 
     public function destroy(Package $package): JsonResponse
     {
+        $forceDelete = $request->query('force', false);
+
+        // Check if package is used by any students
+        $studentCount = $package->students()->count();
+
+        if ($studentCount > 0 && !$forceDelete) {
+            return response()->json([
+                'error' => 'Ne možete obrisati paket koji koriste studenti',
+                'message' => "Ovaj paket koristi {$studentCount} " . ($studentCount === 1 ? 'student' : 'studenata') . ". Označite 'Prisilno brisanje' da nastavite.",
+                'student_count' => $studentCount,
+                'can_force_delete' => true
+            ], 422);
+        }
+
+        // If force delete, update students to remove package reference
+        if ($forceDelete && $studentCount > 0) {
+            // Set package_type to null for all students using this package
+            $package->students()->update(['package_type' => null]);
+        }
+
+        // Delete installments first
+        $package->installments()->delete();
+
+        // Delete package
         $package->delete();
+
         return response()->json(null, 204);
     }
 }

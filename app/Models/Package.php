@@ -22,7 +22,8 @@ class Package extends Model
         'has_contract',
         'duration_days',
         'features',
-        'contract_template',
+        'contract_template_individual',
+        'contract_template_company',
     ];
 
     protected function casts(): array

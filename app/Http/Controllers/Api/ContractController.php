@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ContractSignedNotification;
 use App\Mail\ContractToStudent;
 use App\Models\Contract;
-use App\Models\ContractTemplate;
+use App\Models\Package;
 use App\Models\Student;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
@@ -34,40 +34,29 @@ class ContractController extends Controller
 
         $student = Student::findOrFail($validated['student_id']);
 
-        // Get template
-        $templateType = $student->entity_type;
-        $template = ContractTemplate::where('template_type', $templateType)
-            ->where('package_type', $student->package_type)
-            ->first();
+        // Get package by slug
+        $package = Package::where('slug', $student->package_type)->first();
+
+        if (!$package) {
+            return response()->json(['error' => 'Paket nije pronađen'], 404);
+        }
+
+        // Determine which template to use based on entity type
+        $template = $student->entity_type === 'company'
+            ? $package->contract_template_company
+            : $package->contract_template_individual;
 
         if (!$template) {
-            return response()->json(['error' => 'Template nije pronađen'], 404);
+            return response()->json(['error' => 'Ugovor nije pronađen za ovaj paket'], 404);
         }
 
         // Generate contract content
-        $contractContent = $template->generateContent([
-            'ime' => $student->first_name,
-            'prezime' => $student->last_name,
-            'adresa' => $student->address,
-            'postanskiBroj' => $student->postal_code,
-            'mjesto' => $student->city,
-            'drzava' => $student->country,
-            'brojLicnogDokumenta' => $student->id_document_number,
-            'telefon' => $student->phone,
-            'email' => $student->email,
-            'nazivFirme' => $student->company_name,
-            'pdvBroj' => $student->vat_number,
-            'adresaFirme' => $student->company_address,
-            'postanskiBrojFirme' => $student->company_postal_code,
-            'mjestoFirme' => $student->company_city,
-            'drzavaFirme' => $student->company_country,
-            'registracijaFirme' => $student->company_registration,
-        ]);
+        $contractContent = $this->replaceTemplatePlaceholders($template, $student, $package);
 
         $contract = Contract::create([
             'student_id' => $student->id,
             'contract_number' => Contract::generateContractNumber(),
-            'contract_type' => $templateType,
+            'contract_type' => $student->entity_type,
             'contract_content' => $contractContent,
             'signature_data' => $validated['signature_data'],
             'signed_at' => now(),
@@ -130,33 +119,52 @@ class ContractController extends Controller
 
         $student = Student::findOrFail($validated['student_id']);
 
-        $template = ContractTemplate::where('template_type', $student->entity_type)
-            ->where('package_type', $student->package_type)
-            ->first();
+        // Get package by slug
+        $package = Package::where('slug', $student->package_type)->first();
 
-        if (!$template) {
-            return response()->json(['error' => 'Template nije pronađen'], 404);
+        if (!$package) {
+            return response()->json(['error' => 'Paket nije pronađen'], 404);
         }
 
-        $content = $template->generateContent([
-            'ime' => $student->first_name,
-            'prezime' => $student->last_name,
-            'adresa' => $student->address,
-            'postanskiBroj' => $student->postal_code,
-            'mjesto' => $student->city,
-            'drzava' => $student->country,
-            'brojLicnogDokumenta' => $student->id_document_number,
-            'telefon' => $student->phone,
-            'email' => $student->email,
-            'nazivFirme' => $student->company_name,
-            'pdvBroj' => $student->vat_number,
-            'adresaFirme' => $student->company_address,
-            'postanskiBrojFirme' => $student->company_postal_code,
-            'mjestoFirme' => $student->company_city,
-            'drzavaFirme' => $student->company_country,
-            'registracijaFirme' => $student->company_registration,
-        ]);
+        // Determine which template to use based on entity type
+        $template = $student->entity_type === 'company'
+            ? $package->contract_template_company
+            : $package->contract_template_individual;
+
+        if (!$template) {
+            return response()->json(['error' => 'Ugovor nije pronađen za ovaj paket'], 404);
+        }
+
+        // Replace placeholders
+        $content = $this->replaceTemplatePlaceholders($template, $student, $package);
 
         return response()->json(['content' => $content]);
+    }
+
+    private function replaceTemplatePlaceholders(string $template, Student $student, Package $package): string
+    {
+        $replacements = [
+            '{ime}' => $student->first_name,
+            '{prezime}' => $student->last_name,
+            '{adresa}' => $student->address,
+            '{postanskiBroj}' => $student->postal_code,
+            '{mjesto}' => $student->city,
+            '{grad}' => $student->city,
+            '{drzava}' => $student->country,
+            '{brojLicnogDokumenta}' => $student->id_document_number,
+            '{telefon}' => $student->phone,
+            '{email}' => $student->email,
+            '{nazivFirme}' => $student->company_name ?? '',
+            '{pdvBroj}' => $student->vat_number ?? '',
+            '{adresaFirme}' => $student->company_address ?? '',
+            '{postanskiBrojFirme}' => $student->company_postal_code ?? '',
+            '{mjestoFirme}' => $student->company_city ?? '',
+            '{drzavaFirme}' => $student->company_country ?? '',
+            '{registracijaFirme}' => $student->company_registration ?? '',
+            '{cijena}' => number_format($package->price, 2, ',', '.') . ' EUR',
+            '{datum}' => now()->format('d.m.Y'),
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $template);
     }
 }
