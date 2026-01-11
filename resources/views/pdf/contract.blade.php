@@ -173,7 +173,7 @@
                 </tr>
                 <tr>
                     <td class="label">Paket:</td>
-                    <td>{{ strtoupper(str_replace('-', ' ', $student->package_type)) }}</td>
+                    <td>{{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }} ({{ number_format($package->price ?? 0, 2, ',', '.') }}€)</td>
                 </tr>
                 <tr>
                     <td class="label">Tip lica:</td>

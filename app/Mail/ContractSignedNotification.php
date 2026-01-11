@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Contract;
+use App\Models\Package;
 use App\Models\Student;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
@@ -16,10 +17,15 @@ class ContractSignedNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public Package $package;
+
     public function __construct(
         public Student $student,
         public Contract $contract
-    ) {}
+    ) {
+        // Load package data
+        $this->package = Package::where('slug', $student->package_type)->first();
+    }
 
     public function envelope(): Envelope
     {
@@ -32,6 +38,9 @@ class ContractSignedNotification extends Mailable
     {
         return new Content(
             view: 'emails.contract-signed-admin',
+            with: [
+                'package' => $this->package,
+            ],
         );
     }
 
@@ -40,6 +49,7 @@ class ContractSignedNotification extends Mailable
         $pdf = Pdf::loadView('pdf.contract', [
             'contract' => $this->contract,
             'student' => $this->student,
+            'package' => $this->package,
         ]);
 
         $filename = sprintf(

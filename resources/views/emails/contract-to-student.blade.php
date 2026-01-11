@@ -80,7 +80,10 @@
             <div class="info-section">
                 <h3>Detalji kursa</h3>
                 <div class="info-row">
-                    <span class="label">Paket:</span> {{ strtoupper(str_replace('-', ' ', $student->package_type)) }}
+                    <span class="label">Paket:</span> {{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Cijena:</span> {{ number_format($package->price ?? 0, 2, ',', '.') }}€
                 </div>
                 <div class="info-row">
                     <span class="label">Način plaćanja:</span> {{ $student->payment_method === 'full' ? 'Plaćanje u cjelosti' : 'Plaćanje na rate' }}

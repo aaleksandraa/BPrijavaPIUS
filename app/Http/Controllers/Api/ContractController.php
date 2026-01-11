@@ -69,18 +69,25 @@ class ContractController extends Controller
 
         // Send contract PDF to student FIRST
         try {
+            \Log::info('Sending contract email to student: ' . $student->email);
             Mail::to($student->email)
                 ->send(new ContractToStudent($student, $contract));
+            \Log::info('Contract email sent successfully to: ' . $student->email);
         } catch (\Exception $e) {
             \Log::error('Failed to send contract to student: ' . $e->getMessage());
+            \Log::error('Student email: ' . $student->email);
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
         }
 
         // Then send notification to admin at info@pius-academy.com
         try {
+            \Log::info('Sending admin notification to: info@pius-academy.com');
             Mail::to('info@pius-academy.com')
                 ->send(new ContractSignedNotification($student, $contract));
+            \Log::info('Admin notification sent successfully');
         } catch (\Exception $e) {
             \Log::error('Failed to send admin notification email: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
         }
 
         return response()->json($contract, 201);

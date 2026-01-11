@@ -97,7 +97,11 @@
             <h3>Detalji kursa</h3>
             <div class="info-row">
                 <span class="label">Paket:</span>
-                <span class="value">{{ strtoupper(str_replace('-', ' ', $student->package_type)) }}</span>
+                <span class="value">{{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Cijena:</span>
+                <span class="value">{{ number_format($package->price ?? 0, 2, ',', '.') }}€</span>
             </div>
             <div class="info-row">
                 <span class="label">Tip lica:</span>
