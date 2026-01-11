@@ -6,7 +6,7 @@
     <title>Rechnung {{ $invoice->invoice_number }}</title>
     <style>
         @page {
-            margin: 10mm 10mm 10mm 10mm;
+            margin: 0mm 10mm 5mm 10mm;
         }
         body {
             font-family: DejaVu Sans, sans-serif;
@@ -22,22 +22,26 @@
         }
         .header-table {
             width: 100%;
-            margin-bottom: 5mm;
-            padding-bottom: 5mm;
+            margin-bottom: 3mm;
+            padding-bottom: 3mm;
+            border-collapse: collapse;
         }
         .logo-cell {
             vertical-align: bottom;
+            width: 250px;
         }
         .logo {
-            width: 200px;
+            width: 250px;
             height: auto;
+            display: block;
         }
         .company-info-cell {
             vertical-align: bottom;
             padding-left: 10px;
         }
         .company-info {
-            font-size: 10pt;
+            font-size: 11pt;
+            line-height: 1.4;
         }
         .divider {
             border: 0;
@@ -46,74 +50,83 @@
         }
         .recipient-table {
             width: 100%;
-            margin-bottom: 5mm;
+            margin-bottom: 3mm;
             font-size: 11pt;
+            border-collapse: collapse;
         }
         .recipient-left {
-            width: 48%;
+            width: 50%;
             vertical-align: top;
         }
         .recipient-right {
-            width: 48%;
+            width: 50%;
             vertical-align: top;
             text-align: right;
             padding-top: 20px;
         }
         .recipient-left h2 {
-            font-size: 12pt;
-            margin: 0 0 5px 0;
+            font-size: 13pt;
+            margin: 0 0 3px 0;
             font-weight: bold;
         }
         .recipient-left p {
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.3;
+        }
+        .recipient-right p {
+            margin: 0;
+            line-height: 1.3;
         }
         .invoice-title {
             text-align: center;
-            margin-bottom: 5mm;
+            margin-bottom: 3mm;
         }
         .invoice-title h1 {
             font-size: 16pt;
             margin: 0;
+            font-weight: bold;
         }
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 5mm;
+            margin-bottom: 10mm;
             font-size: 10pt;
         }
         .invoice-table th {
             background-color: #000000;
             color: #ffffff;
-            padding: 8px;
+            padding: 8px 5px;
             text-align: left;
             font-weight: normal;
+            border: 1px solid #000000;
+            white-space: nowrap;
         }
         .invoice-table td {
             border: 1px solid #000000;
-            padding: 8px;
+            padding: 8px 5px;
+            white-space: nowrap;
         }
         .invoice-table .col-num {
             width: 5%;
             text-align: center;
         }
         .invoice-table .col-desc {
-            width: 35%;
+            width: 30%;
+            white-space: normal;
         }
         .invoice-table .col-qty {
-            width: 10%;
+            width: 8%;
             text-align: center;
         }
         .invoice-table .col-price {
-            width: 16%;
-            text-align: right;
+            width: 14%;
+            text-align: left;
         }
         .footer {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 5mm 10mm;
+            bottom: 5mm;
+            left: 10mm;
+            right: 10mm;
             font-size: 9pt;
         }
         .footer-note {
@@ -126,18 +139,19 @@
         }
         .footer-table {
             width: 100%;
+            border-collapse: collapse;
         }
         .footer-col-small {
-            width: 25%;
+            width: 20%;
             vertical-align: top;
         }
         .footer-col-medium {
-            width: 30%;
+            width: 25%;
             vertical-align: top;
             text-align: right;
         }
         .footer-col-large {
-            width: 45%;
+            width: 50%;
             vertical-align: top;
             text-align: right;
         }
@@ -194,8 +208,7 @@
                             {{ $student->address }}<br>
                             {{ $student->postal_code }} {{ $student->city }}<br>
                             {{ $student->country }}<br>
-                            {{ $student->email }}<br>
-                            @if($student->id_document_number)ID: {{ $student->id_document_number }}@endif
+                            {{ $student->email }}
                         </p>
                     @endif
                 </td>

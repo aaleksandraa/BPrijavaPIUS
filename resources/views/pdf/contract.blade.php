@@ -54,7 +54,7 @@
             line-height: 1.6;
             white-space: pre-line;
         }
-        .contract-content strong {
+        .contract-content b {
             font-weight: bold;
             color: #333;
         }
@@ -242,24 +242,30 @@
                 $content = $contract->contract_content;
 
                 // Bold za naslove članaka i sekcija
-                $content = preg_replace('/^(Član \d+[a-z]?\..*)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(Član \d+[a-z]?\..*)/m', '**$1**', $content);
 
                 // Bold za "Obaveze Prodavca:" i "Obaveze Kupca:"
-                $content = preg_replace('/(Obaveze Prodavca:|Obaveze Kupca.*:)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/(Obaveze Prodavca:|Obaveze Kupca.*:)/m', '**$1**', $content);
 
                 // Bold za važne rečenice (bullet points sa važnim obavezama)
-                $content = preg_replace('/(• Ne distribuirati materijale kursa trećim licima bez saglasnosti Prodavca\.)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/(• Ne distribuirati materijale kursa trećim licima bez saglasnosti Prodavca\.)/m', '**$1**', $content);
 
                 // Bold za naslove ugovora
-                $content = preg_replace('/^(UGOVOR O.*)/m', '<strong>$1</strong>', $content);
-                $content = preg_replace('/^(Zaključen dana:.*)/m', '<strong>$1</strong>', $content);
-                $content = preg_replace('/^(Između:)/m', '<strong>$1</strong>', $content);
-                $content = preg_replace('/^(Prodavca:.*)/m', '<strong>$1</strong>', $content);
-                $content = preg_replace('/^(Kupca \(.*\):.*)/m', '<strong>$1</strong>', $content);
-                $content = preg_replace('/^(Ugovorne odredbe:)/m', '<strong>$1</strong>', $content);
+                $content = preg_replace('/^(UGOVOR O.*)/m', '**$1**', $content);
+                $content = preg_replace('/^(Zaključen dana:.*)/m', '**$1**', $content);
+                $content = preg_replace('/^(Između:)/m', '**$1**', $content);
+                $content = preg_replace('/^(Prodavca:.*)/m', '**$1**', $content);
+                $content = preg_replace('/^(Kupca \(.*\):.*)/m', '**$1**', $content);
+                $content = preg_replace('/^(Ugovorne odredbe:)/m', '**$1**', $content);
+
+                // Escape HTML ali zadrži bold markere
+                $content = e($content);
+
+                // Konvertuj ** u <b> tagove
+                $content = preg_replace('/\*\*(.*?)\*\*/s', '<b>$1</b>', $content);
 
                 // Konvertuj nove linije u <br>
-                $content = nl2br(e($content));
+                $content = nl2br($content);
             @endphp
             {!! $content !!}
         </div>

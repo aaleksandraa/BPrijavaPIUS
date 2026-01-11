@@ -20,6 +20,7 @@ class Package extends Model
         'image_url',
         'is_active',
         'show_on_landing',
+        'show_first_installment_reminder',
         'has_contract',
         'duration_days',
         'features',
@@ -34,6 +35,7 @@ class Package extends Model
             'discount_price' => 'decimal:2',
             'is_active' => 'boolean',
             'show_on_landing' => 'boolean',
+            'show_first_installment_reminder' => 'boolean',
             'has_contract' => 'boolean',
             'features' => 'array',
         ];

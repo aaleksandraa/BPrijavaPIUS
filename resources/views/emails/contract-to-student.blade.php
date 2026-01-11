@@ -83,7 +83,13 @@
                     <span class="label">Paket:</span> {{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }}
                 </div>
                 <div class="info-row">
-                    <span class="label">Cijena:</span> {{ number_format($package->price ?? 0, 2, ',', '.') }}€
+                    <span class="label">Cijena:</span>
+                    @if($package->discount_price)
+                        <span style="text-decoration: line-through; color: #999;">{{ number_format($package->price, 2, ',', '.') }}€</span>
+                        <strong style="color: #d9a078;">{{ number_format($package->discount_price, 2, ',', '.') }}€</strong>
+                    @else
+                        {{ number_format($package->price ?? 0, 2, ',', '.') }}€
+                    @endif
                 </div>
                 <div class="info-row">
                     <span class="label">Način plaćanja:</span> {{ $student->payment_method === 'full' ? 'Plaćanje u cjelosti' : 'Plaćanje na rate' }}
@@ -96,12 +102,14 @@
                 </div>
             </div>
 
-            @if($student->payment_method === 'installments')
+            @if($student->payment_method === 'installments' && ($package->show_first_installment_reminder ?? true))
             <div class="important">
                 <strong>Važno - Prva rata</strong>
                 <p style="margin: 10px 0 0 0;">Molimo vas da prvu ratu uplatite u roku od <strong>48 sati</strong> od potpisivanja ugovora.</p>
             </div>
+            @endif
 
+            @if($student->payment_method === 'installments')
             <div class="info-section">
                 <h3>Podaci za uplatu</h3>
                 <div class="info-row">
