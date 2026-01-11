@@ -13,7 +13,7 @@ class StudentController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Student::with(['contracts', 'payments', 'invoices'])->orderBy('enrolled_at', 'desc');
+        $query = Student::with(['contracts', 'payments', 'invoices', 'package.installments'])->orderBy('enrolled_at', 'desc');
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -35,7 +35,9 @@ class StudentController extends Controller
 
         $students = $query->get()->map(function ($student) {
             $student->paid_installments_count = $student->payments->where('status', 'paid')->count();
-            $student->total_installments = $student->payment_method === 'installments' ? 3 : 1;
+            $student->total_installments = $student->package && $student->package->installments
+                ? $student->package->installments->count()
+                : ($student->payment_method === 'installments' ? 3 : 1);
             $student->payment_status = $student->paid_installments_count . '/' . $student->total_installments;
             return $student;
         });
@@ -79,7 +81,7 @@ class StudentController extends Controller
 
     public function show(Student $student): JsonResponse
     {
-        return response()->json($student->load('contracts'));
+        return response()->json($student->load(['contracts', 'package.installments']));
     }
 
     public function update(Request $request, Student $student): JsonResponse

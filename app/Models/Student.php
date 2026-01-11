@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Student extends Model
 {
@@ -56,6 +57,11 @@ class Student extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function package(): BelongsTo
+    {
+        return $this->belongsTo(Package::class, 'package_type', 'slug');
+    }
+
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
@@ -68,6 +74,12 @@ class Student extends Model
 
     public function getTotalInstallmentsAttribute(): int
     {
+        // Get from package if available
+        if ($this->package && $this->package->installments) {
+            return $this->package->installments->count();
+        }
+
+        // Fallback to payment method
         return $this->payment_method === 'installments' ? 3 : 1;
     }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\LandingPageController;
 use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -70,6 +71,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy']);
     Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf']);
     Route::post('/invoices/{invoice}/send-reminder', [SettingsController::class, 'sendPaymentReminder']);
+
+    // Payments
+    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::post('/payments', [PaymentController::class, 'store']);
+    Route::put('/payments/{payment}', [PaymentController::class, 'update']);
+    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy']);
+    Route::post('/payments/{payment}/mark-paid', [PaymentController::class, 'markAsPaid']);
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index']);
