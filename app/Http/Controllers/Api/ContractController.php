@@ -67,20 +67,20 @@ class ContractController extends Controller
         // Update student status
         $student->update(['status' => 'contract_signed']);
 
-        // Send email notification to admin
-        try {
-            Mail::to(config('mail.from.address'))
-                ->send(new ContractSignedNotification($student, $contract));
-        } catch (\Exception $e) {
-            \Log::error('Failed to send admin notification email: ' . $e->getMessage());
-        }
-
-        // Send contract PDF to student
+        // Send contract PDF to student FIRST
         try {
             Mail::to($student->email)
                 ->send(new ContractToStudent($student, $contract));
         } catch (\Exception $e) {
             \Log::error('Failed to send contract to student: ' . $e->getMessage());
+        }
+
+        // Then send notification to admin at info@pius-academy.com
+        try {
+            Mail::to('info@pius-academy.com')
+                ->send(new ContractSignedNotification($student, $contract));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send admin notification email: ' . $e->getMessage());
         }
 
         return response()->json($contract, 201);

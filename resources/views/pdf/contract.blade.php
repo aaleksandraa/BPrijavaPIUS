@@ -52,6 +52,7 @@
             margin-top: 12px;
             text-align: justify;
             line-height: 1.5;
+            white-space: pre-wrap;
         }
         .signature-section {
             margin-top: 15px;
@@ -98,9 +99,6 @@
             text-align: right;
             vertical-align: middle;
         }
-        .page-number:before {
-            content: "Strana " counter(page) " od " counter(pages);
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -116,13 +114,30 @@
         .content-wrapper {
             margin-bottom: 25mm;
         }
+        script {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="footer">
         <div class="footer-content">
             <div class="footer-left">PIUS ACADEMY</div>
-            <div class="footer-center"><span class="page-number"></span></div>
+            <div class="footer-center">
+                <script type="text/php">
+                    if (isset($pdf)) {
+                        $text = "Strana {PAGE_NUM} od {PAGE_COUNT}";
+                        $font = $fontMetrics->get_font("DejaVu Sans", "normal");
+                        $size = 8;
+                        $pageWidth = $pdf->get_width();
+                        $pageHeight = $pdf->get_height();
+                        $textWidth = $fontMetrics->get_text_width($text, $font, $size);
+                        $x = ($pageWidth - $textWidth) / 2;
+                        $y = $pageHeight - 15;
+                        $pdf->text($x, $y, $text, $font, $size);
+                    }
+                </script>
+            </div>
             <div class="footer-right">Generisano: {{ now()->format('d.m.Y') }}</div>
         </div>
     </div>
@@ -158,7 +173,7 @@
                 </tr>
                 <tr>
                     <td class="label">Paket:</td>
-                    <td>{{ $student->package_type === 'pius-plus' ? 'PIUS PLUS (1.800€)' : 'PIUS PRO (2.500€)' }}</td>
+                    <td>{{ strtoupper(str_replace('-', ' ', $student->package_type)) }}</td>
                 </tr>
                 <tr>
                     <td class="label">Tip lica:</td>
@@ -195,49 +210,6 @@
         </div>
         @endif
 
-        @if($student->payment_method === 'installments')
-        <div class="section" style="background: #f5ece5;">
-            <div class="section-title">PLAN PLAĆANJA</div>
-            <table>
-                @if($student->package_type === 'pius-plus')
-                <tr>
-                    <td class="label">Prva rata:</td>
-                    <td>400€ (uplata u roku od 24h)</td>
-                </tr>
-                <tr>
-                    <td class="label">Druga rata:</td>
-                    <td>500€ (do 01.11.2025)</td>
-                </tr>
-                <tr>
-                    <td class="label">Treća rata:</td>
-                    <td>900€ (do 01.12.2025)</td>
-                </tr>
-                <tr>
-                    <td class="label">UKUPNO:</td>
-                    <td><strong>1.800€</strong></td>
-                </tr>
-                @else
-                <tr>
-                    <td class="label">Prva rata:</td>
-                    <td>500€ (uplata u roku od 24h)</td>
-                </tr>
-                <tr>
-                    <td class="label">Druga rata:</td>
-                    <td>1.000€ (do 01.11.2025)</td>
-                </tr>
-                <tr>
-                    <td class="label">Treća rata:</td>
-                    <td>1.000€ (do 01.12.2025)</td>
-                </tr>
-                <tr>
-                    <td class="label">UKUPNO:</td>
-                    <td><strong>2.500€</strong></td>
-                </tr>
-                @endif
-            </table>
-        </div>
-        @endif
-
         <div class="section">
             <div class="section-title">PODACI ZA UPLATU</div>
             <table>
@@ -262,7 +234,7 @@
 
         <div class="contract-content">
             <div class="section-title">SADRŽAJ UGOVORA</div>
-            {!! nl2br(e($contract->contract_content)) !!}
+            {{ $contract->contract_content }}
         </div>
 
         @if($contract->signature_data)

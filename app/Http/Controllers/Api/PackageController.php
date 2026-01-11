@@ -151,7 +151,7 @@ class PackageController extends Controller
         return response()->json($package->load('installments'));
     }
 
-    public function destroy(Package $package): JsonResponse
+    public function destroy(Request $request, Package $package): JsonResponse
     {
         $forceDelete = $request->query('force', false);
 
