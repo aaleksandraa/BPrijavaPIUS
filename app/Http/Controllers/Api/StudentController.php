@@ -34,10 +34,32 @@ class StudentController extends Controller
         }
 
         $students = $query->get()->map(function ($student) {
-            $student->paid_installments_count = $student->payments->where('status', 'paid')->count();
-            $student->total_installments = $student->package && $student->package->installments
-                ? $student->package->installments->count()
-                : ($student->payment_method === 'installments' ? 3 : 1);
+            // Calculate paid_installments_count based on Invoice records
+            if ($student->payment_method === 'installments') {
+                // For installments: count unique paid installment numbers
+                $paidInstallments = $student->invoices
+                    ->where('status', 'paid')
+                    ->whereNotNull('installment_number')
+                    ->pluck('installment_number')
+                    ->unique()
+                    ->count();
+
+                $student->paid_installments_count = $paidInstallments;
+            } else {
+                // For full payment: check if there's a paid invoice
+                $hasPaidInvoice = $student->invoices
+                    ->where('status', 'paid')
+                    ->isNotEmpty();
+
+                $student->paid_installments_count = $hasPaidInvoice ? 1 : 0;
+            }
+
+            // Calculate total_installments
+            if ($student->package && $student->package->installments && $student->package->installments->isNotEmpty()) {
+                $student->total_installments = $student->package->installments->count();
+            } else {
+                $student->total_installments = $student->payment_method === 'installments' ? 3 : 1;
+            }
             $student->payment_status = $student->paid_installments_count . '/' . $student->total_installments;
             return $student;
         });
@@ -57,7 +79,7 @@ class StudentController extends Controller
             'city' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'phone' => 'required|string|max:50',
-            'email' => 'required|email|unique:students,email',
+            'email' => 'required|email', // Removed unique constraint - will handle manually
             'id_document_number' => 'required|string|max:50',
             'entity_type' => 'required|in:individual,company',
             'payment_method' => 'required|in:full,installments',
@@ -74,6 +96,25 @@ class StudentController extends Controller
         $validated['status'] = $request->input('status', 'enrolled');
         $validated['enrolled_at'] = $request->input('enrolled_at', now());
 
+        // Check if student with this email already exists
+        $existingStudent = Student::where('email', $validated['email'])->first();
+
+        if ($existingStudent) {
+            // If student exists but hasn't signed contract yet (status is 'enrolled'), update their data
+            // This allows users to go back and forth in the registration form without getting "email taken" error
+            if ($existingStudent->status === 'enrolled' && !$existingStudent->contracts()->exists()) {
+                $existingStudent->update($validated);
+                return response()->json($existingStudent, 200);
+            }
+
+            // If student already has a signed contract, don't allow duplicate
+            return response()->json([
+                'message' => 'Student sa ovim emailom već postoji i ima potpisan ugovor.',
+                'errors' => ['email' => ['Email je već zauzet.']]
+            ], 422);
+        }
+
+        // Create new student
         $student = Student::create($validated);
 
         return response()->json($student, 201);

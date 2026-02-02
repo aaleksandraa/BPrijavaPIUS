@@ -7,8 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Remove the CHECK constraint on package_type column
-        DB::statement('ALTER TABLE students DROP CONSTRAINT IF EXISTS students_package_type_check');
+        // SQLite doesn't support DROP CONSTRAINT, so we skip this for SQLite
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE students DROP CONSTRAINT IF EXISTS students_package_type_check');
+        }
     }
 
     public function down(): void

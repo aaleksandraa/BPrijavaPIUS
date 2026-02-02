@@ -69,13 +69,24 @@ class Student extends Model
 
     public function getPaidInstallmentsCountAttribute(): int
     {
-        return $this->payments()->where('status', 'paid')->count();
+        if ($this->payment_method === 'installments') {
+            // For installments: count unique paid installment numbers
+            return $this->invoices
+                ->where('status', 'paid')
+                ->whereNotNull('installment_number')
+                ->pluck('installment_number')
+                ->unique()
+                ->count();
+        }
+
+        // For full payment: check if there's a paid invoice
+        return $this->invoices->where('status', 'paid')->isNotEmpty() ? 1 : 0;
     }
 
     public function getTotalInstallmentsAttribute(): int
     {
-        // Get from package if available
-        if ($this->package && $this->package->installments) {
+        // Get from package if available and has installments
+        if ($this->package && $this->package->installments && $this->package->installments->isNotEmpty()) {
             return $this->package->installments->count();
         }
 

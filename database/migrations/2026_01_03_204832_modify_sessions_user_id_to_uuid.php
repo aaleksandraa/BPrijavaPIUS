@@ -12,6 +12,11 @@ return new class extends Migration
         // Clear existing sessions
         DB::table('sessions')->truncate();
 
+        // For SQLite, we need to drop the index first
+        if (DB::getDriverName() === 'sqlite') {
+            DB::statement('DROP INDEX IF EXISTS sessions_user_id_index');
+        }
+
         // Change user_id from bigint to uuid
         Schema::table('sessions', function (Blueprint $table) {
             $table->dropColumn('user_id');

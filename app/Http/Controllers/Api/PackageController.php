@@ -49,7 +49,7 @@ class PackageController extends Controller
             'installments' => 'nullable|array',
             'installments.*.installment_number' => 'required|integer|min:1',
             'installments.*.amount' => 'required|numeric|min:0',
-            'installments.*.due_description' => 'required|string',
+            'installments.*.due_description' => 'nullable|string',
             'installments.*.due_date' => 'nullable|date',
             'installments.*.due_days' => 'nullable|integer',
         ]);
@@ -124,7 +124,7 @@ class PackageController extends Controller
             'installments.*.id' => 'nullable|uuid',
             'installments.*.installment_number' => 'required|integer|min:1',
             'installments.*.amount' => 'required|numeric|min:0',
-            'installments.*.due_description' => 'required|string',
+            'installments.*.due_description' => 'nullable|string',
             'installments.*.due_date' => 'nullable|date',
             'installments.*.due_days' => 'nullable|integer',
         ]);
