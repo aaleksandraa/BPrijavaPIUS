@@ -89,6 +89,7 @@ class InvoiceController extends Controller
             'status' => 'sometimes|in:pending,paid,cancelled',
             'payment_date' => 'nullable|date',
             'notes' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
         ]);
 
         $wasNotPaid = $invoice->status !== 'paid';
