@@ -105,6 +105,23 @@ class ContractController extends Controller
         // Load package relationship
         $package = Package::where('slug', $student->package_type)->first();
 
+        // Log for debugging
+        \Log::info('Contract PDF Download', [
+            'contract_id' => $contract->id,
+            'student_id' => $student->id,
+            'package_type' => $student->package_type,
+            'package_found' => $package ? 'yes' : 'no',
+            'contract_content_length' => strlen($contract->contract_content ?? ''),
+        ]);
+
+        if (!$package) {
+            \Log::error('Package not found for contract download', [
+                'student_id' => $student->id,
+                'package_type' => $student->package_type,
+            ]);
+            return response()->json(['error' => 'Paket nije pronađen'], 404);
+        }
+
         $pdf = Pdf::loadView('pdf.contract', [
             'contract' => $contract,
             'student' => $student,
