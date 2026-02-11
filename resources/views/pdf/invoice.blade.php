@@ -250,6 +250,14 @@
             </tbody>
         </table>
 
+        <!-- Notes Section -->
+        @if($invoice->notes)
+        <div style="margin-bottom: 10mm; font-size: 11pt;">
+            <p style="margin: 0 0 5px 0;"><strong>Hinweis:</strong></p>
+            <p style="margin: 0; line-height: 1.4;">{{ $invoice->notes }}</p>
+        </div>
+        @endif
+
         <!-- Footer -->
         <div class="footer">
             <p class="footer-note">* Rechnungsdatum ist gleich Liefer- bzw. Leistungsdatum</p>
