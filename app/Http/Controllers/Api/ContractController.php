@@ -102,9 +102,13 @@ class ContractController extends Controller
     {
         $student = $contract->student;
 
+        // Load package relationship
+        $package = Package::where('slug', $student->package_type)->first();
+
         $pdf = Pdf::loadView('pdf.contract', [
             'contract' => $contract,
             'student' => $student,
+            'package' => $package,
         ]);
 
         $filename = sprintf(
