@@ -79,7 +79,7 @@ class StudentController extends Controller
             'city' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'phone' => 'required|string|max:50',
-            'email' => 'required|email', // Removed unique constraint - will handle manually
+            'email' => 'required|email',
             'id_document_number' => 'required|string|max:50',
             'entity_type' => 'required|in:individual,company',
             'payment_method' => 'required|in:full,installments',
@@ -96,25 +96,6 @@ class StudentController extends Controller
         $validated['status'] = $request->input('status', 'enrolled');
         $validated['enrolled_at'] = $request->input('enrolled_at', now());
 
-        // Check if student with this email already exists
-        $existingStudent = Student::where('email', $validated['email'])->first();
-
-        if ($existingStudent) {
-            // If student exists but hasn't signed contract yet (status is 'enrolled'), update their data
-            // This allows users to go back and forth in the registration form without getting "email taken" error
-            if ($existingStudent->status === 'enrolled' && !$existingStudent->contracts()->exists()) {
-                $existingStudent->update($validated);
-                return response()->json($existingStudent, 200);
-            }
-
-            // If student already has a signed contract, don't allow duplicate
-            return response()->json([
-                'message' => 'Student sa ovim emailom već postoji i ima potpisan ugovor.',
-                'errors' => ['email' => ['Email je već zauzet.']]
-            ], 422);
-        }
-
-        // Create new student
         $student = Student::create($validated);
 
         return response()->json($student, 201);
@@ -138,7 +119,7 @@ class StudentController extends Controller
             'city' => 'sometimes|string|max:255',
             'country' => 'sometimes|string|max:255',
             'phone' => 'sometimes|string|max:50',
-            'email' => 'sometimes|email|unique:students,email,' . $student->id,
+            'email' => 'sometimes|email',
             'id_document_number' => 'sometimes|string|max:50',
             'entity_type' => 'sometimes|in:individual,company',
             'payment_method' => 'sometimes|in:full,installments',
