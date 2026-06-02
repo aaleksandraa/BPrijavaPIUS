@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         if (!$admin->is_active) {
             throw ValidationException::withMessages([
-                'email' => ['Vaš nalog nije aktivan.'],
+                'email' => ['Vas nalog nije aktivan.'],
             ]);
         }
 
@@ -134,7 +134,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Uspješno ste se odjavili.']);
+        return response()->json(['message' => 'Uspjesno ste se odjavili.']);
     }
 
     public function me(Request $request): JsonResponse
@@ -148,6 +148,12 @@ class AuthController extends Controller
 
         if ($origin) {
             return rtrim($origin, '/');
+        }
+
+        $frontendUrl = (string) config('app.frontend_url');
+
+        if ($frontendUrl) {
+            return rtrim($frontendUrl, '/');
         }
 
         $appUrl = rtrim((string) config('app.url'), '/');
