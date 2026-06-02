@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy']);
     Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf']);
     Route::post('/invoices/{invoice}/send', [InvoiceController::class, 'sendInvoice']);
+    Route::post('/invoices/{invoice}/send-test', [InvoiceController::class, 'sendInvoiceTest']);
     Route::post('/invoices/{invoice}/send-reminder', [SettingsController::class, 'sendPaymentReminder']);
 
     // Payments

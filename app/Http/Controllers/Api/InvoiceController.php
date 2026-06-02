@@ -171,6 +171,23 @@ class InvoiceController extends Controller
         ]);
     }
 
+    public function sendInvoiceTest(Request $request, Invoice $invoice): JsonResponse
+    {
+        $invoice->load('student');
+        $adminEmail = $request->user()?->email;
+
+        if (!$adminEmail) {
+            return response()->json(['message' => 'Admin email nije pronadjen.'], 422);
+        }
+
+        Mail::to($adminEmail)->send(new InvoicePaidNotification($invoice));
+
+        return response()->json([
+            'message' => 'Test faktura je uspjesno poslana na admin email.',
+            'email' => $adminEmail,
+        ]);
+    }
+
     public function getStudentPaymentStatus(): JsonResponse
     {
         $students = Student::with(['payments', 'invoices'])
