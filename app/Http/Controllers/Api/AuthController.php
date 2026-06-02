@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -25,18 +26,35 @@ class AuthController extends Controller
         $admin = AdminUser::where('email', $request->email)->first();
 
         if (!$admin || !Hash::check($request->password, $admin->password)) {
+            Log::warning('Admin login failed', [
+                'email' => $request->email,
+                'admin_found' => (bool) $admin,
+                'ip' => $request->ip(),
+            ]);
+
             throw ValidationException::withMessages([
                 'email' => ['Neispravni podaci za prijavu.'],
             ]);
         }
 
         if (!$admin->is_active) {
+            Log::warning('Admin login blocked inactive account', [
+                'email' => $request->email,
+                'ip' => $request->ip(),
+            ]);
+
             throw ValidationException::withMessages([
                 'email' => ['Vas nalog nije aktivan.'],
             ]);
         }
 
         $token = $admin->createToken('admin-token')->plainTextToken;
+
+        Log::info('Admin login token issued', [
+            'email' => $admin->email,
+            'admin_id' => $admin->id,
+            'ip' => $request->ip(),
+        ]);
 
         return response()->json([
             'user' => [
