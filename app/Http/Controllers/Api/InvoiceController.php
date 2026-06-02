@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\InvoicePaidNotification;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Student;
@@ -10,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -146,6 +148,27 @@ class InvoiceController extends Controller
         $filename = sprintf('Rechnung_%s.pdf', str_replace('/', '_', $invoice->invoice_number));
 
         return $pdf->download($filename);
+    }
+
+    public function sendInvoice(Invoice $invoice): JsonResponse
+    {
+        $invoice->load('student');
+        $student = $invoice->student;
+
+        if (!$student) {
+            return response()->json(['message' => 'Student nije pronadjen.'], 404);
+        }
+
+        if (!$student->email) {
+            return response()->json(['message' => 'Student nema email adresu.'], 422);
+        }
+
+        Mail::to($student->email)->send(new InvoicePaidNotification($invoice));
+
+        return response()->json([
+            'message' => 'Faktura je uspjesno poslana klijentu.',
+            'email' => $student->email,
+        ]);
     }
 
     public function getStudentPaymentStatus(): JsonResponse
