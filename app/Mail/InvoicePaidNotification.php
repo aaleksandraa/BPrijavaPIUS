@@ -33,7 +33,7 @@ class InvoicePaidNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.invoice-paid',
+            text: 'emails.invoice-paid',
             with: [
                 'invoice' => $this->invoice,
                 'student' => $this->invoice->student,
