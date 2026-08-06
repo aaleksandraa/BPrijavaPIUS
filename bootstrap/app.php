@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->statefulApi();
+        // Admin SPA koristi Bearer token auth preko različitih subdomena
+        // (prijava.* -> api.*), pa ne uključujemo stateful Sanctum cookie flow.
 
         // Exclude API routes from CSRF verification
         $middleware->validateCsrfTokens(except: [

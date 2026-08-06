@@ -157,7 +157,14 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        $admin = $request->user();
+
+        return response()->json([
+            'id' => $admin->id,
+            'email' => $admin->email,
+            'role' => $admin->role,
+            'is_active' => $admin->is_active,
+        ]);
     }
 
     private function frontendUrl(Request $request): string
