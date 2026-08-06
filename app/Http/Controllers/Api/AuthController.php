@@ -137,7 +137,7 @@ class AuthController extends Controller
         }
 
         $admin->forceFill([
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ])->save();
 
         $admin->tokens()->delete();

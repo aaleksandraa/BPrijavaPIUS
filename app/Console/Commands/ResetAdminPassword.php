@@ -4,8 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\AdminUser;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
-
 class ResetAdminPassword extends Command
 {
     protected $signature = 'admin:reset-password
@@ -34,7 +32,7 @@ class ResetAdminPassword extends Command
         $admin = AdminUser::updateOrCreate(
             ['email' => $email],
             [
-                'password' => Hash::make($password),
+                'password' => $password,
                 'role' => 'admin',
                 'is_active' => true,
             ]

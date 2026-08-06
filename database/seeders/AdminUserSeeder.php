@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\AdminUser;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
 {
@@ -13,7 +12,7 @@ class AdminUserSeeder extends Seeder
         AdminUser::updateOrCreate(
             ['email' => 'admin@piusacademy.com'],
             [
-                'password' => Hash::make('admin123'),
+                'password' => 'admin123',
                 'role' => 'admin',
                 'is_active' => true,
             ]
