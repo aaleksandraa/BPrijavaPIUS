@@ -101,7 +101,14 @@
             </div>
             <div class="info-row">
                 <span class="label">Cijena:</span>
-                <span class="value">{{ number_format($package->price ?? 0, 2, ',', '.') }}€</span>
+                <span class="value">
+                    @if(isset($package->discount_price))
+                        <span style="text-decoration: line-through; color: #999;">{{ number_format($package->price ?? 0, 2, ',', '.') }}€</span>
+                        <strong style="color: #d9a078;">{{ number_format($package->discount_price, 2, ',', '.') }}€</strong>
+                    @else
+                        {{ number_format($package->price ?? 0, 2, ',', '.') }}€
+                    @endif
+                </span>
             </div>
             <div class="info-row">
                 <span class="label">Tip lica:</span>

@@ -186,7 +186,15 @@
                 </tr>
                 <tr>
                     <td class="label">Paket:</td>
-                    <td class="value">{{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }} ({{ number_format($package->price ?? 0, 2, ',', '.') }}€)</td>
+                    <td class="value">
+                        {{ $package->name ?? strtoupper(str_replace('-', ' ', $student->package_type)) }}
+                        (@if(isset($package->discount_price))
+                            <span style="text-decoration: line-through; color: #777;">{{ number_format($package->price ?? 0, 2, ',', '.') }}€</span>
+                            <strong>{{ number_format($package->discount_price, 2, ',', '.') }}€</strong>
+                        @else
+                            {{ number_format($package->price ?? 0, 2, ',', '.') }}€
+                        @endif)
+                    </td>
                 </tr>
                 <tr>
                     <td class="label">Tip lica:</td>
