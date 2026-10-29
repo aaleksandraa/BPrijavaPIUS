@@ -5,12 +5,12 @@ namespace App\Mail;
 use App\Models\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Mail\Mailable;
 
 class InvoicePaidNotification extends Mailable
 {
@@ -19,14 +19,14 @@ class InvoicePaidNotification extends Mailable
     public function __construct(
         public Invoice $invoice
     ) {
-        $this->invoice->load('student');
+        $this->invoice->load('student.package');
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
             from: new Address(config('mail.from.address'), 'PIUS ACADEMY'),
-            subject: 'Faktura ' . $this->invoice->invoice_number . ' - PIUS ACADEMY',
+            subject: 'Faktura '.$this->invoice->invoice_number.' - PIUS ACADEMY',
         );
     }
 
@@ -58,7 +58,7 @@ class InvoicePaidNotification extends Mailable
 
         if (file_exists($logoPath)) {
             $logoData = file_get_contents($logoPath);
-            $logoBase64 = 'data:image/jpeg;base64,' . base64_encode($logoData);
+            $logoBase64 = 'data:image/jpeg;base64,'.base64_encode($logoData);
         }
 
         return Pdf::loadView('pdf.invoice', [

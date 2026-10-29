@@ -18,7 +18,7 @@ class ContractController extends Controller
 {
     public function index(): JsonResponse
     {
-        $contracts = Contract::with('student')
+        $contracts = Contract::with('student.package')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -37,7 +37,7 @@ class ContractController extends Controller
         // Get package by slug
         $package = Package::where('slug', $student->package_type)->first();
 
-        if (!$package) {
+        if (! $package) {
             return response()->json(['error' => 'Paket nije pronađen'], 404);
         }
 
@@ -46,7 +46,7 @@ class ContractController extends Controller
             ? $package->contract_template_company
             : $package->contract_template_individual;
 
-        if (!$template) {
+        if (! $template) {
             return response()->json(['error' => 'Ugovor nije pronađen za ovaj paket'], 404);
         }
 
@@ -69,14 +69,14 @@ class ContractController extends Controller
 
         // Send contract PDF to student FIRST
         try {
-            \Log::info('Sending contract email to student: ' . $student->email);
+            \Log::info('Sending contract email to student: '.$student->email);
             Mail::to($student->email)
                 ->send(new ContractToStudent($student, $contract));
-            \Log::info('Contract email sent successfully to: ' . $student->email);
+            \Log::info('Contract email sent successfully to: '.$student->email);
         } catch (\Exception $e) {
-            \Log::error('Failed to send contract to student: ' . $e->getMessage());
-            \Log::error('Student email: ' . $student->email);
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            \Log::error('Failed to send contract to student: '.$e->getMessage());
+            \Log::error('Student email: '.$student->email);
+            \Log::error('Stack trace: '.$e->getTraceAsString());
         }
 
         // Then send notification to admin at info@pius-academy.com
@@ -86,8 +86,8 @@ class ContractController extends Controller
                 ->send(new ContractSignedNotification($student, $contract));
             \Log::info('Admin notification sent successfully');
         } catch (\Exception $e) {
-            \Log::error('Failed to send admin notification email: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            \Log::error('Failed to send admin notification email: '.$e->getMessage());
+            \Log::error('Stack trace: '.$e->getTraceAsString());
         }
 
         return response()->json($contract, 201);
@@ -95,7 +95,7 @@ class ContractController extends Controller
 
     public function show(Contract $contract): JsonResponse
     {
-        return response()->json($contract->load('student'));
+        return response()->json($contract->load('student.package'));
     }
 
     public function downloadPdf(Contract $contract): Response
@@ -114,11 +114,12 @@ class ContractController extends Controller
             'contract_content_length' => strlen($contract->contract_content ?? ''),
         ]);
 
-        if (!$package) {
+        if (! $package) {
             \Log::error('Package not found for contract download', [
                 'student_id' => $student->id,
                 'package_type' => $student->package_type,
             ]);
+
             return response()->json(['error' => 'Paket nije pronađen'], 404);
         }
 
@@ -150,7 +151,7 @@ class ContractController extends Controller
         // Get package by slug
         $package = Package::where('slug', $student->package_type)->first();
 
-        if (!$package) {
+        if (! $package) {
             return response()->json(['error' => 'Paket nije pronađen'], 404);
         }
 
@@ -159,7 +160,7 @@ class ContractController extends Controller
             ? $package->contract_template_company
             : $package->contract_template_individual;
 
-        if (!$template) {
+        if (! $template) {
             return response()->json(['error' => 'Ugovor nije pronađen za ovaj paket'], 404);
         }
 
@@ -189,7 +190,7 @@ class ContractController extends Controller
             '{mjestoFirme}' => $student->company_city ?? '',
             '{drzavaFirme}' => $student->company_country ?? '',
             '{registracijaFirme}' => $student->company_registration ?? '',
-            '{cijena}' => number_format($package->price, 2, ',', '.') . ' EUR',
+            '{cijena}' => number_format($package->price, 2, ',', '.').' EUR',
             '{datum}' => now()->format('d.m.Y'),
         ];
 

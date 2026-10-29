@@ -16,9 +16,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            set -e
             cd /var/www/vhosts/pius-academy.com/api.prijava.pius-academy.com
             git pull origin main
             php artisan config:clear
+            php artisan migrate --force
             php artisan cache:clear
             php artisan route:clear
             php artisan view:clear

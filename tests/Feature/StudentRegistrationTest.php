@@ -59,6 +59,39 @@ class StudentRegistrationTest extends TestCase
         $this->assertSame(2, Student::where('email', 'ana@example.com')->count());
     }
 
+    public function test_new_course_can_be_loaded_by_slug_and_registered_without_admin_login(): void
+    {
+        $course = Package::create([
+            'name' => 'EYELINER LIPS',
+            'slug' => 'eyeliner-lips',
+            'price' => 999.99,
+            'payment_type' => 'fixed',
+            'is_active' => true,
+            'show_on_landing' => false,
+            'has_contract' => false,
+        ]);
+
+        $this->getJson('/api/packages/slug/eyeliner-lips')
+            ->assertOk()
+            ->assertJsonPath('id', $course->id)
+            ->assertJsonPath('slug', 'eyeliner-lips');
+
+        $this->postJson('/api/students', [
+            'first_name' => 'Ana',
+            'last_name' => 'Test',
+            'address' => 'Test 1',
+            'postal_code' => '71000',
+            'city' => 'Sarajevo',
+            'country' => 'BiH',
+            'phone' => '+38761111222',
+            'email' => 'course@example.com',
+            'id_document_number' => 'ID-COURSE',
+            'entity_type' => 'individual',
+            'payment_method' => 'full',
+            'package_type' => $course->slug,
+        ])->assertCreated()->assertJsonPath('package_type', 'eyeliner-lips');
+    }
+
     public function test_admin_can_update_student_to_email_that_another_student_already_uses(): void
     {
         $admin = AdminUser::create([

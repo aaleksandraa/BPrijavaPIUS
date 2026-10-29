@@ -241,7 +241,7 @@
             <tbody>
                 <tr>
                     <td class="col-num">01</td>
-                    <td class="col-desc">{{ $invoice->description }}</td>
+                    <td class="col-desc">{{ $invoice->description }}<br><small>Kurs: {{ $student->package?->name ?? $student->package_type }}</small></td>
                     <td class="col-qty">1</td>
                     <td class="col-price">€{{ number_format($invoice->net_amount, 2, ',', '.') }}</td>
                     <td class="col-price">€{{ number_format($invoice->vat_amount, 2, ',', '.') }}</td>

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Package;
-use App\Models\PackageInstallment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class PackageController extends Controller
 {
@@ -25,6 +25,7 @@ class PackageController extends Controller
         }
 
         $packages = $query->orderBy('created_at', 'desc')->get();
+
         return response()->json($packages);
     }
 
@@ -60,7 +61,7 @@ class PackageController extends Controller
         $originalSlug = $slug;
         $counter = 1;
         while (Package::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -82,7 +83,7 @@ class PackageController extends Controller
             'contract_template_company' => $validated['contract_template_company'] ?? null,
         ]);
 
-        if ($validated['payment_type'] === 'installments' && !empty($validated['installments'])) {
+        if ($validated['payment_type'] === 'installments' && ! empty($validated['installments'])) {
             foreach ($validated['installments'] as $installment) {
                 $package->installments()->create($installment);
             }
@@ -99,14 +100,20 @@ class PackageController extends Controller
     public function showBySlug(string $slug): JsonResponse
     {
         $package = Package::with('installments')->where('slug', $slug)->firstOrFail();
+
         return response()->json($package);
     }
 
     public function update(Request $request, Package $package): JsonResponse
     {
+        if ($request->filled('slug') && $request->input('slug') !== $package->slug && $package->students()->exists()) {
+            throw ValidationException::withMessages([
+                'slug' => 'Kurs već ima upise. Zadržite postojeći URL slug da ugovori i fakture ostanu povezani s ovim kursom.',
+            ]);
+        }
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'slug' => 'sometimes|string|max:255|unique:packages,slug,' . $package->id,
+            'slug' => 'sometimes|string|max:255|unique:packages,slug,'.$package->id,
             'price' => 'sometimes|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
             'payment_type' => 'sometimes|in:installments,fixed',
@@ -166,12 +173,12 @@ class PackageController extends Controller
         // Check if package is used by any students
         $studentCount = $package->students()->count();
 
-        if ($studentCount > 0 && !$forceDelete) {
+        if ($studentCount > 0 && ! $forceDelete) {
             return response()->json([
                 'error' => 'Ne možete obrisati paket koji koriste studenti',
-                'message' => "Ovaj paket koristi {$studentCount} " . ($studentCount === 1 ? 'student' : 'studenata') . ". Označite 'Prisilno brisanje' da nastavite.",
+                'message' => "Ovaj paket koristi {$studentCount} ".($studentCount === 1 ? 'student' : 'studenata').". Označite 'Prisilno brisanje' da nastavite.",
                 'student_count' => $studentCount,
-                'can_force_delete' => true
+                'can_force_delete' => true,
             ], 422);
         }
 

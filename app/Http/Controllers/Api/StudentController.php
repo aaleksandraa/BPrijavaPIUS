@@ -8,6 +8,7 @@ use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
@@ -19,9 +20,10 @@ class StudentController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('company_name', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('company_name', 'like', "%{$search}%")
+                    ->orWhereHas('package', fn ($package) => $package->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -33,34 +35,13 @@ class StudentController extends Controller
             $query->where('payment_method', $request->payment_method);
         }
 
+        if ($request->filled('package_type')) {
+            $query->where('package_type', $request->input('package_type'));
+        }
+
         $students = $query->get()->map(function ($student) {
-            // Calculate paid_installments_count based on Invoice records
-            if ($student->payment_method === 'installments') {
-                // For installments: count unique paid installment numbers
-                $paidInstallments = $student->invoices
-                    ->where('status', 'paid')
-                    ->whereNotNull('installment_number')
-                    ->pluck('installment_number')
-                    ->unique()
-                    ->count();
+            $student->forceFill($student->paymentSummary());
 
-                $student->paid_installments_count = $paidInstallments;
-            } else {
-                // For full payment: check if there's a paid invoice
-                $hasPaidInvoice = $student->invoices
-                    ->where('status', 'paid')
-                    ->isNotEmpty();
-
-                $student->paid_installments_count = $hasPaidInvoice ? 1 : 0;
-            }
-
-            // Calculate total_installments
-            if ($student->package && $student->package->installments && $student->package->installments->isNotEmpty()) {
-                $student->total_installments = $student->package->installments->count();
-            } else {
-                $student->total_installments = $student->payment_method === 'installments' ? 3 : 1;
-            }
-            $student->payment_status = $student->paid_installments_count . '/' . $student->total_installments;
             return $student;
         });
 
@@ -103,11 +84,19 @@ class StudentController extends Controller
 
     public function show(Student $student): JsonResponse
     {
-        return response()->json($student->load(['contracts', 'package.installments']));
+        $student->load(['contracts', 'invoices', 'payments', 'package.installments']);
+
+        return response()->json($student->forceFill($student->paymentSummary()));
     }
 
     public function update(Request $request, Student $student): JsonResponse
     {
+        if ($request->filled('package_type') && $request->input('package_type') !== $student->package_type
+            && ($student->contracts()->exists() || $student->invoices()->exists() || $student->payments()->exists())) {
+            throw ValidationException::withMessages([
+                'package_type' => 'Ovaj upis već ima ugovor, fakturu ili uplatu. Za drugi kurs dodajte novi upis polaznika.',
+            ]);
+        }
         $validPackageSlugs = Package::pluck('slug')->toArray();
 
         $validated = $request->validate([
