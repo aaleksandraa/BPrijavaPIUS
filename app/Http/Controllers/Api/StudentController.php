@@ -82,6 +82,26 @@ class StudentController extends Controller
         return response()->json($student, 201);
     }
 
+    public function addEnrollment(Request $request, Student $student): JsonResponse
+    {
+        $validated = $request->validate([
+            'package_type' => ['required', Rule::exists('packages', 'slug')->where('is_active', true)],
+            'payment_method' => 'required|in:full,installments',
+        ]);
+        $package = Package::where('slug', $validated['package_type'])->firstOrFail();
+        if ($validated['payment_method'] === 'installments' && $package->payment_type !== 'installments') {
+            throw ValidationException::withMessages(['payment_method' => 'Odabrani kurs se plaća u cjelosti.']);
+        }
+
+        $personalFields = array_diff($student->getFillable(), ['package_type', 'payment_method', 'status', 'enrolled_at']);
+        $enrollment = Student::create(array_merge($student->only($personalFields), $validated, [
+            'status' => 'enrolled',
+            'enrolled_at' => now(),
+        ]));
+
+        return response()->json($enrollment->load('package.installments'), 201);
+    }
+
     public function show(Student $student): JsonResponse
     {
         $student->load(['contracts', 'invoices', 'payments', 'package.installments']);

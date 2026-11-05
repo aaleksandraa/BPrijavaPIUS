@@ -33,6 +33,7 @@ class InvoiceController extends Controller
             'invoice_date' => 'required|date',
             'payment_date' => 'nullable|date',
             'description' => 'required|string|max:255',
+            'invoice_type' => 'sometimes|in:course,other',
             'total_amount' => 'required|numeric|min:0',
             'vat_rate' => 'numeric|min:0|max:100',
             'installment_number' => 'nullable|integer|min:1',
@@ -43,6 +44,9 @@ class InvoiceController extends Controller
         ]);
 
         $student = Student::with('package.installments')->findOrFail($validated['student_id']);
+        if (($validated['invoice_type'] ?? 'course') === 'other' && isset($validated['installment_number'])) {
+            throw ValidationException::withMessages(['installment_number' => 'Faktura za ostale usluge ne može biti vezana za ratu kursa.']);
+        }
         if (isset($validated['installment_number'])) {
             if ($student->payment_method !== 'installments'
                 || ! in_array((int) $validated['installment_number'], $student->installmentNumbers(), true)) {
@@ -71,6 +75,7 @@ class InvoiceController extends Controller
                 'invoice_date' => $validated['invoice_date'],
                 'payment_date' => $validated['payment_date'] ?? (($validated['mark_as_paid'] ?? false) ? now() : null),
                 'description' => $validated['description'],
+                'invoice_type' => $validated['invoice_type'] ?? 'course',
                 'net_amount' => $amounts['net_amount'],
                 'vat_rate' => $vatRate,
                 'vat_amount' => $amounts['vat_amount'],
@@ -140,7 +145,14 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice): JsonResponse
     {
-        $invoice->delete();
+        DB::transaction(function () use ($invoice) {
+            // Do not turn an unrelated service payment into a legacy course
+            // payment when the invoice foreign key is set to null on deletion.
+            if ($invoice->invoice_type === 'other') {
+                Payment::where('invoice_id', $invoice->id)->delete();
+            }
+            $invoice->delete();
+        });
 
         return response()->json(null, 204);
     }

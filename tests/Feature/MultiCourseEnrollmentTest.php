@@ -154,4 +154,74 @@ class MultiCourseEnrollmentTest extends TestCase
         $this->assertEquals(600, $entry['paid_amount']);
         $this->assertEquals(0, $entry['remaining_amount']);
     }
+
+    public function test_manual_service_invoice_does_not_pay_course_or_reserve_a_rate(): void
+    {
+        $student = $this->enroll('eyeliner-lips', 2);
+        $payload = array_merge($this->invoice($student, null), [
+            'invoice_type' => 'other', 'description' => 'Edukativni materijal', 'total_amount' => 75,
+        ]);
+        $id = $this->postJson('/api/invoices', $payload)->assertCreated()
+            ->assertJsonPath('installment_number', null)->assertJsonPath('invoice_type', 'other')->json('id');
+        $entry = $this->getJson('/api/students/'.$student->id)->assertOk();
+        $entry->assertJsonPath('payment_status', '0/2')->assertJsonPath('paid_amount', 0)
+            ->assertJsonPath('remaining_amount', 600);
+        $this->postJson('/api/invoices', array_merge($payload, ['installment_number' => 1]))
+            ->assertUnprocessable()->assertJsonValidationErrors('installment_number');
+
+        $invoice = Invoice::with('student.package')->findOrFail($id);
+        $html = view('pdf.invoice', ['invoice' => $invoice, 'student' => $invoice->student, 'logoPath' => null])->render();
+        $this->assertStringContainsString('Edukativni materijal', $html);
+        $this->assertStringNotContainsString('Kurs: EYELINER-LIPS', $html);
+        $email = view('emails.invoice-paid', ['invoice' => $invoice, 'student' => $invoice->student])->render();
+        $this->assertStringNotContainsString('za kurs', $email);
+
+        $this->deleteJson('/api/invoices/'.$id)->assertNoContent();
+        $this->assertDatabaseMissing('payments', ['invoice_id' => $id]);
+        $this->assertEquals(0, $student->fresh()->paymentSummary()['paid_amount']);
+        $this->postJson('/api/invoices', $this->invoice($student, 1))->assertCreated();
+    }
+
+    public function test_marking_a_manual_invoice_paid_later_does_not_mark_full_course_paid(): void
+    {
+        $student = $this->enroll('lashes', 0);
+        $payload = array_merge($this->invoice($student, null, false), ['invoice_type' => 'other']);
+        $id = $this->postJson('/api/invoices', $payload)->assertCreated()->json('id');
+        $this->putJson('/api/invoices/'.$id, ['status' => 'paid'])->assertOk();
+        $entry = $this->getJson('/api/students/'.$student->id)->assertOk();
+        $entry->assertJsonPath('payment_status', '0/1')->assertJsonPath('paid_amount', 0);
+        $this->assertDatabaseHas('payments', ['invoice_id' => $id, 'status' => 'paid']);
+        $this->putJson('/api/invoices/'.$id, ['status' => 'cancelled'])->assertOk();
+        $this->assertDatabaseHas('payments', ['invoice_id' => $id, 'status' => 'pending']);
+    }
+
+    public function test_admin_adds_an_offered_course_using_saved_personal_details(): void
+    {
+        $original = $this->enroll('pius-pro', 3);
+        $this->enroll('lashes', 0);
+        $original->update(['status' => 'completed', 'company_name' => 'Saved company']);
+        $this->postJson('/api/invoices', $this->invoice($original, 1))->assertCreated();
+
+        $response = $this->postJson('/api/students/'.$original->id.'/enrollments', [
+            'package_type' => 'lashes', 'payment_method' => 'full', 'first_name' => 'Changed',
+        ])->assertCreated()->assertJsonPath('first_name', 'Ana')->assertJsonPath('email', $original->email)
+            ->assertJsonPath('company_name', 'Saved company')->assertJsonPath('status', 'enrolled')
+            ->assertJsonPath('package.slug', 'lashes');
+        $this->assertNotEquals($original->id, $response->json('id'));
+        $this->assertSame('pius-pro', $original->fresh()->package_type);
+        $this->assertSame('completed', $original->fresh()->status);
+        $this->assertEquals(200, $original->fresh()->paymentSummary()['paid_amount']);
+        $new = Student::findOrFail($response->json('id'));
+        $this->assertEquals(0, $new->paymentSummary()['paid_amount']);
+        $this->assertCount(0, $new->invoices);
+
+        $this->postJson('/api/students/'.$original->id.'/enrollments', ['package_type' => 'unknown', 'payment_method' => 'full'])
+            ->assertUnprocessable()->assertJsonValidationErrors('package_type');
+        $this->postJson('/api/students/'.$original->id.'/enrollments', ['package_type' => 'lashes', 'payment_method' => 'installments'])
+            ->assertUnprocessable()->assertJsonValidationErrors('payment_method');
+        Package::where('slug', 'lashes')->update(['is_active' => false]);
+        $this->postJson('/api/students/'.$original->id.'/enrollments', ['package_type' => 'lashes', 'payment_method' => 'full'])
+            ->assertUnprocessable()->assertJsonValidationErrors('package_type');
+        $this->assertDatabaseCount('students', 3);
+    }
 }

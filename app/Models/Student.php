@@ -73,7 +73,7 @@ class Student extends Model
             return count($this->paidInstallmentNumbers());
         }
 
-        return $this->invoices->where('status', 'paid')->isNotEmpty()
+        return $this->courseInvoices()->where('status', 'paid')->isNotEmpty()
             || $this->payments->whereNull('invoice_id')->where('status', 'paid')->isNotEmpty() ? 1 : 0;
     }
 
@@ -91,7 +91,7 @@ class Student extends Model
 
     public function paidInstallmentNumbers(): array
     {
-        return $this->invoices->where('status', 'paid')->pluck('installment_number')
+        return $this->courseInvoices()->where('status', 'paid')->pluck('installment_number')
             ->merge($this->payments->whereNull('invoice_id')->where('status', 'paid')->pluck('installment_number'))
             ->filter(fn ($number) => in_array((int) $number, $this->installmentNumbers(), true))
             ->map(fn ($number) => (int) $number)->unique()->sort()->values()->all();
@@ -107,7 +107,7 @@ class Student extends Model
         // Every student ID is one enrollment. Never aggregate money by email.
         // Legacy manual payments have no invoice; linked payments are already
         // represented by their invoice and must not be counted twice.
-        $paid = round((float) $this->invoices->where('status', 'paid')->sum('total_amount')
+        $paid = round((float) $this->courseInvoices()->where('status', 'paid')->sum('total_amount')
             + (float) $this->payments->whereNull('invoice_id')->where('status', 'paid')->sum('amount'), 2);
         $total = (float) ($this->package?->discount_price ?? $this->package?->price ?? 0);
 
@@ -127,5 +127,10 @@ class Student extends Model
         $total = $this->total_installments;
 
         return "{$paid}/{$total}";
+    }
+
+    private function courseInvoices(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->invoices->filter(fn ($invoice) => $invoice->invoice_type !== 'other');
     }
 }
